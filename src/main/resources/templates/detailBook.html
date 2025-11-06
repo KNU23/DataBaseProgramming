@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<html>
+<head>
+<meta charset="UTF-8">
+<title>도서정보 상세보기</title>
+</head>
+<body>
+	<table border="1">
+		<tr>
+			<th>bookid</th>
+			<td th:text="${bookDetail.bookid}"></td>
+		</tr>
+		<tr>
+			<th>bookname</th>
+			<td th:text="${bookDetail.bookname}"></td>
+		</tr>
+		<tr>
+			<th>publisher</th>
+			<td th:text="${bookDetail.publisher}"></td>
+		</tr>
+		<tr>
+			<th>price</th>
+			<td th:text="${bookDetail.price}"></td>
+		</tr>	
+	</table>
+	<br>
+	<button onclick="goList()">목록</button>
+	<button onclick="goUpdate()">수정</button>
+	<button onclick="goDelete()">삭제</button>
+	
+</body>
+
+<script th:inline="javascript">
+	/* 목록으로 이동하기 버튼 */
+	const goList = () => {
+		location.href = "/list";
+	}
+	/* 게시글 수정하기 버튼 */
+	const goUpdate = () => {
+		if(confirm("수정하시겠습니까?")){
+			location.href = "/goUpdate/[[${bookDetail.bookid}]]";
+		}
+	} 
+	/* 게시글 삭제하기 버튼 */
+	const goDelete = () => {
+		if (confirm("삭제하시겠습니까?")) {
+			location.href = "/goDelete/[[${bookDetail.bookid}]]";
+		}
+	}
+	
+	
+</script>
+
+
+</html>
