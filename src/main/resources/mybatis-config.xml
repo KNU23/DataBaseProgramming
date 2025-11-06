@@ -3,9 +3,12 @@
        "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
    <typeAliases>
+   
    <typeAlias type="com.example.demo.controller.IndexController" alias="IndexController"/>
-   
-   
    <typeAlias type="com.example.demo.dto.BoardDTO" alias="Board"></typeAlias>
+   <typeAlias type="com.example.demo.dto.CustomerDTO" alias="Customer"></typeAlias>
+   <typeAlias type="com.example.demo.dto.OrdersDTO" alias="Orders"></typeAlias>
+   <typeAlias type="com.example.demo.dto.OrderDetailsDTO" alias="OrderDetailsDTO"></typeAlias>
+   
    </typeAliases>
 </configuration>

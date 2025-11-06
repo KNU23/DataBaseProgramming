@@ -2,56 +2,105 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="Board">
-      <!-- sql문 작성 공간 -->
     
-
-	  <!-- 도서 목록 조회 쿼리 -->
-	  <select id="getList" resultType="board">
+    <!-- countList: 검색 조건에 author 추가 -->
+    <select id="countList" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+          FROM book
+        <if test="keyword != null and keyword != ''">
+	  		WHERE bookname LIKE CONCAT('%', #{keyword}, '%')
+	  		   OR publisher LIKE CONCAT('%', #{keyword}, '%')
+	  		   OR author LIKE CONCAT('%', #{keyword}, '%')
+	  	</if>
+    </select>
+    
+	<!-- getList: SELECT 절에 author, stock, cover_image_path 추가 -->
+	<select id="getList" resultType="board" parameterType="map">
 	  	SELECT bookid,
 	  	   	   bookname,
 	  	   	   publisher,
-	  	   	   price
+	  	   	   price,
+	  	   	   author,
+	  	   	   stock,
+	  	   	   cover_image_path <!-- (추가) -->
 	  	  FROM book
-	  ORDER BY bookid ASC
+	  	  
+	  	<!-- 검색 조건 -->
+	  	<if test="keyword != null and keyword != ''">
+	  		WHERE bookname LIKE CONCAT('%', #{keyword}, '%')
+	  		   OR publisher LIKE CONCAT('%', #{keyword}, '%')
+	  		   OR author LIKE CONCAT('%', #{keyword}, '%')
+	  	</if>
+	  	
+	  	<!-- 정렬 -->
+	    ORDER BY
+	    <choose>
+	        <when test="sort == 'bookname'"> bookname </when>
+	        <when test="sort == 'publisher'"> publisher </when>
+	        <when test="sort == 'author'"> author </when>
+	        <when test="sort == 'price'"> price </when>
+	        <when test="sort == 'stock'"> stock </when>
+	        <otherwise> bookid </otherwise>
+	    </choose>
+	    <choose>
+	        <when test="order == 'desc'"> DESC </when>
+	        <otherwise> ASC </otherwise>
+	    </choose>
+	    
+	    LIMIT #{offset}, #{limit}
+	</select>
 	  
-	  </select>
-	  
-	  <!-- 도서 정보 저장 쿼리 -->
-	  <insert id="save" parameterType="board">
-		  INSERT INTO book (
+	<!-- save: cover_image_path 추가 -->
+	<insert id="save" parameterType="board">
+		  INSERT INTO book ( 
 		  					 bookname, 
 		  					 publisher, 
-		  					 price
+		  					 price,
+		  					 author,
+		  					 stock,
+		  					 description,
+		  					 cover_image_path <!-- (추가) -->
 		  					 )
-		  		VALUES	   ( #{bookname}, #{publisher}, #{price})	  
-	  </insert>
+		  		VALUES	   ( #{bookname}, 
+		  					 #{publisher}, 
+		  					 #{price},
+		  					 #{author},
+		  					 #{stock},
+		  					 #{description},
+		  					 #{coverImagePath} <!-- (추가) -->
+		  					 )	  
+	</insert>
 	  
-	  <!-- 도서정보 상세보기 -->
-	  <select id="detail" parameterType="int" resultType="board">
-	  	SELECT bookid,
-	  	   	   bookname,
-	  	   	   publisher,
-	  	   	   price
-	  	  FROM book
+	<!-- detail: SELECT * (모든 컬럼 포함) -->
+	<select id="detail" parameterType="int" resultType="board">
+	  	SELECT * FROM book
 	     WHERE bookid = #{id} 
+	</select>
 	  
-	  </select>
+	<!-- goDelete: 변경 없음 -->
+	<delete id="goDelete" parameterType="int">
+	  	DELETE FROM book WHERE bookid = #{id}
+	</delete>
+	
+	<!-- decreaseStock: 변경 없음 -->
+	<update id="decreaseStock" parameterType="int">
+		UPDATE book
+		   SET stock = stock - 1
+		 WHERE bookid = #{bookid} AND stock > 0
+	</update>
 	  
-	  <!-- 도서정보 삭제하기-->
-	  <delete id="goDelete" parameterType="int">
-	  	DELETE
-	  	  FROM book
-	  	 WHERE bookid = #{id}
-	  </delete>
-	  
-	  <!-- 도서정보 수정하기-->
-	  <update id="goUpdate" parameterType="board">
+	<!-- goUpdate: cover_image_path 추가 -->
+	<update id="goUpdate" parameterType="board">
 	  	  UPDATE book
 	  	  	 SET bookname   = #{bookname},
 	  	  	 	 publisher  = #{publisher},
-	  	  	 	 price	    = #{price}
+	  	  	 	 price	    = #{price},
+	  	  	 	 author     = #{author},
+	  	  	 	 stock      = #{stock},
+	  	  	 	 description = #{description},
+	  	  	 	 cover_image_path = #{coverImagePath} <!-- (추가) -->
 	  	   WHERE bookid     = #{bookid}
-	  
-	  </update>
+	</update>
 	  
 </mapper>
+

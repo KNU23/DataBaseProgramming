@@ -1,0 +1,110 @@
+@charset "UTF-8";
+/* 전역 스타일 */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+/* 컨텐츠 영역 중앙 정렬 및 최대 너비 설정 */
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* 제목 스타일 (예: index.html의 h2) */
+h2 {
+    color: #0056b3;
+    border-bottom: 2px solid #0056b3;
+    padding-bottom: 10px;
+}
+
+/* 테이블 스타일 (bookList.html, detailBook.html) */
+table {
+    width: 100%;
+    border-collapse: collapse; /* border="1" 대신 사용 */
+    margin-top: 20px;
+}
+
+/* 테이블 헤더(th) 및 셀(td) 스타일 */
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* 테이블 헤더(th) 특별 스타일 */
+th {
+    background-color: #f2f2f2;
+    font-weight: 600;
+}
+
+/* 링크 스타일 */
+a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* 폼 스타일 (addBook.html, updateBook.html) */
+form {
+    margin-top: 20px;
+}
+
+form input[type="text"] {
+    width: calc(100% - 22px); /* 100%에서 padding과 border 값을 뺀 너비 */
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* 버튼 스타일 (submit, button) */
+button, input[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s;
+}
+
+button:hover, input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* detailBook.html의 버튼들 */
+/* '목록' 버튼 (기본 파란색) */
+button.btn-list {
+    background-color: #007bff;
+}
+
+/* '수정' 버튼 (초록색 계열) */
+button.btn-update {
+    background-color: #28a745;
+}
+button.btn-update:hover {
+    background-color: #218838;
+}
+
+/* '삭제' 버튼 (빨간색 계열) */
+button.btn-delete {
+    background-color: #dc3545;
+}
+button.btn-delete:hover {
+    background-color: #c82333;
+}

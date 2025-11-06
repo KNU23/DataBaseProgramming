@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Customer">
+
+    <!-- 1. 고객 전체 조회 -->
+    <select id="getAll" resultType="customer">
+        SELECT custid, name, address, phone
+          FROM customer
+      ORDER BY custid ASC
+    </select>
+
+    <!-- 2. 고객 1명 조회 (상세보기) -->
+    <select id="getById" parameterType="int" resultType="customer">
+        SELECT custid, name, address, phone
+          FROM customer
+         WHERE custid = #{id}
+    </select>
+
+    <!-- 3. 고객 등록 -->
+    <insert id="insert" parameterType="customer">
+        INSERT INTO customer (name, address, phone)
+        VALUES (#{name}, #{address}, #{phone})
+    </insert>
+
+    <!-- 4. 고객 정보 수정 -->
+    <update id="update" parameterType="customer">
+        UPDATE customer
+           SET name    = #{name},
+               address = #{address},
+               phone   = #{phone}
+         WHERE custid  = #{custid}
+    </update>
+
+    <!-- 5. 고객 삭제 -->
+    <delete id="delete" parameterType="int">
+        DELETE FROM customer WHERE custid = #{id}
+    </delete>
+
+</mapper>
+
