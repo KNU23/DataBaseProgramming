@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!-- 1. Thymeleaf Security 네임스페이스 추가 -->
 <html xmlns:th="www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
@@ -22,25 +21,28 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
-                    <!-- 2. "도서 목록" (누구나) -->
+                    <!-- "도서 목록" (누구나) -->
                     <li class="nav-item">
                         <a class="nav-link" href="/list">
                             <i class="bi bi-list-ul"></i> 도서 목록
                         </a>
                     </li>
-                    <!-- 3. "도서 추가" (ADMIN만) -->
+                    
+                    <!-- "도서 추가" (ADMIN만) -->
                     <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                         <a class="nav-link" href="/addBook">
                             <i class="bi bi-plus-lg"></i> 도서 추가
                         </a>
                     </li>
-                    <!-- 4. "고객 관리" (인증된 사용자) -->
+                    
+                    <!-- "고객 관리" (인증된 사용자) -->
                     <li class="nav-item" sec:authorize="isAuthenticated()">
                         <a class="nav-link" href="/customers">
                             <i class="bi bi-people"></i> 고객 관리
                         </a>
                     </li>
-                    <!-- 5. "주문 목록" (인증된 사용자) -->
+                    
+                    <!-- "주문 목록" (인증된 사용자) -->
                     <li class="nav-item" sec:authorize="isAuthenticated()">
                         <a class="nav-link" href="/orderList">
                             <i class="bi bi-cart-check"></i> 주문 목록
@@ -48,16 +50,17 @@
                     </li>
                 </ul>
                 
-                <!-- 6. 로그인/로그아웃 버튼 영역 (오른쪽 정렬) -->
+                <!-- 로그인/로그아웃 버튼 영역 (오른쪽 정렬) -->
                 <ul class="navbar-nav">
-                    <!-- 6-1. 비로그인 시 (Anonymous) -->
+                
+                    <!-- 비로그인 시 (Anonymous) -->
                     <li class="nav-item" sec:authorize="isAnonymous()">
                         <a class="btn btn-outline-success" href="/login">
                             <i class="bi bi-box-arrow-in-right"></i> 로그인
                         </a>
                     </li>
                     
-                    <!-- 6-2. 로그인 시 (Authenticated) -->
+                    <!-- 로그인 시 (Authenticated) -->
                     <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarUserDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-person-circle"></i>
@@ -66,7 +69,6 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarUserDropdown">
                             <li>
-                                <!-- (중요) 로그아웃은 POST 요청이어야 함 (CSRF 보호) -->
                                 <form th:action="@{/logout}" method="post" class="d-flex">
                                     <button type="submit" class="dropdown-item">
                                         <i class="bi bi-box-arrow-right"></i> 로그아웃

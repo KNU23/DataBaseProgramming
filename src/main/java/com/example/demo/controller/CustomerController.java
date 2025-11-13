@@ -18,15 +18,12 @@ import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-// (신규) 클래스 레벨에서 '인증된 사용자'만 접근 가능하도록 설정
 @PreAuthorize("isAuthenticated()") 
 public class CustomerController {
 
     private final CustomerService customerService;
 
-    /**
-     * 1. 고객 목록 페이지
-     */
+    /** 고객 목록 페이지 **/
     @GetMapping("/customers")
     public String customerList(Model model) {
         List<CustomerDTO> customerList = customerService.getAll();
@@ -34,18 +31,14 @@ public class CustomerController {
         return "customerList"; 
     }
 
-    /**
-     * 2. 고객 등록 페이지 (GET)
-     */
+    /** 고객 등록 페이지 **/
     @GetMapping("/addCustomer")
     public String addCustomerForm(Model model) {
         model.addAttribute("customerDTO", new CustomerDTO());
         return "addCustomer"; 
     }
 
-    /**
-     * 3. 고객 등록 처리 (POST)
-     */
+    /** 고객 등록 처리 **/
     @PostMapping("/addCustomer")
     public String addCustomer(@Valid CustomerDTO customerDTO,
                               BindingResult bindingResult,
@@ -60,10 +53,5 @@ public class CustomerController {
         return "redirect:/customers";
     }
 
-    /*
-     * (참고) 고객 수정/삭제 기능 추가 시
-     * @PreAuthorize("hasRole('ADMIN')") // 관리자만
-     * 같은 어노테이션을 붙일 수 있습니다.
-     */
 }
 

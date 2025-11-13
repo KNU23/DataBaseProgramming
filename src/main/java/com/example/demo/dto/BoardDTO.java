@@ -23,7 +23,7 @@ public class BoardDTO {
 	
 	@NotNull(message = "가격을 입력해주세요.")
 	@Min(value = 0, message = "가격은 0원 이상이어야 합니다.")
-	private Integer price; // int -> Integer
+	private Integer price; 
 
 	@NotEmpty(message = "저자명은 필수 항목입니다.")
 	private String author;
@@ -34,10 +34,8 @@ public class BoardDTO {
 	
 	private String description;
 
-	// 1. DB에 저장될 이미지 경로 (예: /uploads/UUID.jpg)
 	private String coverImagePath;
 	
-	// 2. 폼에서 받을 이미지 파일 (DB 저장 X)
 	private MultipartFile coverImageFile;
 
 }

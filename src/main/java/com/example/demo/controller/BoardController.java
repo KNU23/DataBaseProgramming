@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.dto.BoardDTO;
 import com.example.demo.dto.BookListResponseDTO;
 import com.example.demo.service.BoardService;
+import com.example.demo.service.BookApiService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 public class BoardController {
 	
 	private final BoardService boardService;
+	private final BookApiService bookApiService;
 	
 	@GetMapping("/list")
 	public String getList(Model model, 
@@ -45,21 +47,19 @@ public class BoardController {
 	
 	@GetMapping("/addBook")
 	public String addBook(Model model) {
-	    // 폼 바인딩을 위해 빈 DTO를 모델에 추가
 		model.addAttribute("boardDTO", new BoardDTO());
 		return "addBook";
 	}
 	
 	
 	@PostMapping("/addBook")
-	// 파일 업로드를 위해 @ModelAttribute 명시
 	public String save(@Valid @ModelAttribute BoardDTO boardDTO, 
 	                   BindingResult bindingResult, 
 	                   RedirectAttributes redirectAttributes) {
 		
 		// 유효성 검사 실패 시, 폼 페이지로 다시 이동
 		if (bindingResult.hasErrors()) {
-			return "addBook"; // 입력했던 내용을 유지한 채 addBook.html 뷰를 반환
+			return "addBook"; 
 		}
 		
 		boardService.save(boardDTO);
@@ -87,26 +87,23 @@ public class BoardController {
 	@GetMapping("/goUpdate/{id}")
 	public String goUpdate(@PathVariable("id") Integer id, Model model) {
 		BoardDTO boardDTO = boardService.detail(id);
-		// 폼 바인딩을 위해 "boardDTO" 대신 "bookDetail" 이름으로 모델에 추가
 		model.addAttribute("bookDetail", boardDTO);
 		return "updateBook";
 	}
 	
 	/** 도서정보 수정 및 저장 */
 	@PostMapping("/goUpdate/{id}")
-	// 파일 업로드를 위해 @ModelAttribute 명시 (객체 이름을 "bookDetail"로 지정)
 	public String goUpdate(@PathVariable("id") Integer id,
 	                       @Valid @ModelAttribute("bookDetail") BoardDTO boardDTO, 
 	                       BindingResult bindingResult, 
 	                       RedirectAttributes redirectAttributes,
 	                       Model model) {
 		
-		boardDTO.setBookid(id); // ID 설정
+		boardDTO.setBookid(id);
 
         // 유효성 검사 실패 시
 		if (bindingResult.hasErrors()) {
-			// model.addAttribute("bookDetail", boardDTO); // @ModelAttribute("bookDetail")이 이 역할을 대신함
-			return "updateBook"; // 수정 폼 뷰로 다시 이동
+			return "updateBook"; 
 		}
 		
 		boardService.goUpdate(boardDTO);
@@ -114,5 +111,31 @@ public class BoardController {
 		return "redirect:/list";
 	}
 	
+	/** 도서 검색 페이지 이동 */
+	@GetMapping("/search")
+	public String searchPage() {
+		return "searchBook";
+	}
+	
+	/** 도서 검색 수행 */
+	@PostMapping("/search")
+	public String search(@RequestParam("keyword") String keyword, Model model) {
+		List<BoardDTO> books = bookApiService.searchBooks(keyword);
+	
+		model.addAttribute("books", books);
+		model.addAttribute("keyword", keyword);
+		
+		return "searchBook";
+	}
+	
+	/** API 검색 결과 DB 저장 */
+	@PostMapping("/addApiBook")
+	public String addApiBook(@ModelAttribute BoardDTO boardDTO, RedirectAttributes redirectAttributes) {
+		
+		boardService.save(boardDTO);
+		
+		redirectAttributes.addFlashAttribute("msg", "도서가 성공적으로 등록되었습니다.");
+		return "redirect:/list";
+	}
 }
 

@@ -3,7 +3,6 @@
          "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="Board">
     
-    <!-- countList: 검색 조건에 author 추가 -->
     <select id="countList" parameterType="map" resultType="int">
         SELECT COUNT(*)
           FROM book
@@ -14,7 +13,6 @@
 	  	</if>
     </select>
     
-	<!-- getList: SELECT 절에 author, stock, cover_image_path 추가 -->
 	<select id="getList" resultType="board" parameterType="map">
 	  	SELECT bookid,
 	  	   	   bookname,
@@ -22,7 +20,7 @@
 	  	   	   price,
 	  	   	   author,
 	  	   	   stock,
-	  	   	   cover_image_path <!-- (추가) -->
+	  	   	   cover_image_path 
 	  	  FROM book
 	  	  
 	  	<!-- 검색 조건 -->
@@ -50,7 +48,6 @@
 	    LIMIT #{offset}, #{limit}
 	</select>
 	  
-	<!-- save: cover_image_path 추가 -->
 	<insert id="save" parameterType="board">
 		  INSERT INTO book ( 
 		  					 bookname, 
@@ -59,7 +56,7 @@
 		  					 author,
 		  					 stock,
 		  					 description,
-		  					 cover_image_path <!-- (추가) -->
+		  					 cover_image_path 
 		  					 )
 		  		VALUES	   ( #{bookname}, 
 		  					 #{publisher}, 
@@ -67,29 +64,25 @@
 		  					 #{author},
 		  					 #{stock},
 		  					 #{description},
-		  					 #{coverImagePath} <!-- (추가) -->
+		  					 #{coverImagePath} 
 		  					 )	  
 	</insert>
 	  
-	<!-- detail: SELECT * (모든 컬럼 포함) -->
 	<select id="detail" parameterType="int" resultType="board">
 	  	SELECT * FROM book
 	     WHERE bookid = #{id} 
 	</select>
 	  
-	<!-- goDelete: 변경 없음 -->
 	<delete id="goDelete" parameterType="int">
 	  	DELETE FROM book WHERE bookid = #{id}
 	</delete>
 	
-	<!-- decreaseStock: 변경 없음 -->
 	<update id="decreaseStock" parameterType="int">
 		UPDATE book
 		   SET stock = stock - 1
 		 WHERE bookid = #{bookid} AND stock > 0
 	</update>
 	  
-	<!-- goUpdate: cover_image_path 추가 -->
 	<update id="goUpdate" parameterType="board">
 	  	  UPDATE book
 	  	  	 SET bookname   = #{bookname},
@@ -98,7 +91,7 @@
 	  	  	 	 author     = #{author},
 	  	  	 	 stock      = #{stock},
 	  	  	 	 description = #{description},
-	  	  	 	 cover_image_path = #{coverImagePath} <!-- (추가) -->
+	  	  	 	 cover_image_path = #{coverImagePath} 
 	  	   WHERE bookid     = #{bookid}
 	</update>
 	  

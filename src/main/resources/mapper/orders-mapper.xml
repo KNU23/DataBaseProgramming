@@ -3,13 +3,13 @@
          "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="Orders">
 
-    <!-- 1. 주문 생성 -->
+    <!-- 주문 생성 -->
     <insert id="insert" parameterType="orders">
         INSERT INTO orders (custid, bookid, saleprice, orderdate)
         VALUES (#{custid}, #{bookid}, #{saleprice}, #{orderdate})
     </insert>
 
-    <!-- 2. 주문 목록 상세 조회 (JOIN) -->
+    <!-- 주문 목록 상세 조회 (JOIN) -->
     <select id="getAllWithDetails" resultType="OrderDetailsDTO">
         SELECT o.orderid, o.saleprice, o.orderdate,
                c.name AS customerName,

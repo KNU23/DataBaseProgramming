@@ -10,12 +10,15 @@
     <div class="container mt-5" style="max-width: 900px;">
         
         <div class="row g-5">
-            <!-- 1. 왼쪽: 이미지 영역 -->
+        
+            <!-- 왼쪽: 이미지 영역 -->
             <div class="col-md-4">
+            
                 <!-- 이미지가 있을 때 -->
                 <div th:if="${bookDetail.coverImagePath != null and bookDetail.coverImagePath != ''}">
                     <img th:src="${bookDetail.coverImagePath}" alt="표지" class="img-fluid rounded shadow-sm w-100">
                 </div>
+                
                 <!-- 이미지가 없을 때 -->
                 <div th:if="${bookDetail.coverImagePath == null or bookDetail.coverImagePath == ''}"
                      class="text-center text-muted d-flex flex-column align-items-center justify-content-center"
@@ -25,7 +28,7 @@
                 </div>
             </div>
 
-            <!-- 2. 오른쪽: 정보 영역 -->
+            <!-- 오른쪽: 정보 영역 -->
             <div class="col-md-8">
                 <h2 th:text="${bookDetail.bookname}">도서 제목</h2>
                 <!-- 부제목 (저자 / 출판사) -->
@@ -60,7 +63,7 @@
                     </ul>
                 </div>
                 
-                <!-- 3. 버튼 영역 (보안 적용) -->
+                <!-- 버튼 영역 (보안 적용) -->
                 <div class="mt-4 d-flex justify-content-between">
                     <a href="/list" class="btn btn-secondary">
                         <i class="bi bi-list-ul"></i> 목록
@@ -83,8 +86,8 @@
                     </div>
                 </div>
             </div>
-        </div> <!-- /row -->
-    </div> <!-- /container -->
+        </div> 
+    </div> 
 
     <!-- 수정 확인 Modal (ADMIN일 때만 렌더링) -->
     <div class="modal fade" id="confirmUpdateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true" sec:authorize="hasRole('ADMIN')">
@@ -108,7 +111,7 @@
     <!-- 삭제 확인 Modal (ADMIN일 때만 렌더링) -->
     <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" sec:authorize="hasRole('ADMIN')">
         <div class="modal-dialog">
-            <div classs="modal-content">
+            <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="deleteModalLabel">삭제 확인</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -128,16 +131,10 @@
     <th:block th:replace="~{layout/footer :: commonScripts}"></th:block>
     
     <script th:inline="javascript">
-        /*<![CDATA[*/
-        
+
         const goList = () => {
             location.href = "/list";
         }
-        
-        /* * (주의) 
-         * sec:authorize 태그로 인해 Modal HTML 자체가 렌더링되지 않을 수 있으므로,
-         * JavaScript에서 Modal 객체를 참조하기 전에 null 체크를 합니다.
-         */
         
         const goUpdate = (bookId) => {
             location.href = "/goUpdate/" + bookId;
@@ -149,7 +146,7 @@
 
         // '수정' Modal 이벤트 리스너
         const updateModal = document.getElementById('confirmUpdateModal');
-        if(updateModal) { // Modal이 존재하는지(즉, Admin인지) 확인
+        if(updateModal) { 
             updateModal.addEventListener('show.bs.modal', (event) => {
                 const button = event.relatedTarget;
                 const bookId = button.getAttribute('data-bookid');
@@ -160,9 +157,9 @@
             });
         }
 
-        // '삭제' Modal 이벤트 리스너
+     	// '삭제' Modal 이벤트 리스너
         const deleteModal = document.getElementById('confirmDeleteModal');
-        if(deleteModal) { // Modal이 존재하는지(즉, Admin인지) 확인
+        if(deleteModal) { 
             deleteModal.addEventListener('show.bs.modal', (event) => {
                 const button = event.relatedTarget;
                 const bookId = button.getAttribute('data-bookid');
@@ -172,7 +169,6 @@
                 };
             });
         }
-        /*]]>*/
     </script>
 </body>
 </html>

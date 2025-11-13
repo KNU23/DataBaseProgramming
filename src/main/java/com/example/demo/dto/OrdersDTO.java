@@ -14,14 +14,14 @@ public class OrdersDTO {
     private int orderid;
 
     @NotNull(message = "고객을 선택해주세요.")
-    private Integer custid; // 고객 ID
+    private Integer custid; 
 
     @NotNull
-    private Integer bookid; // 도서 ID
+    private Integer bookid; 
 
     @NotNull(message = "판매 가격을 입력해주세요.")
-    private Integer saleprice; // 판매 가격
+    private Integer saleprice; 
 
-    private Date orderdate; // 주문 날짜
+    private Date orderdate; 
 
 }

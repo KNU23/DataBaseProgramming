@@ -41,7 +41,7 @@ public class BoardRepository {
 		sql.insert("Board.save", boardDTO);
 	}
 	
-	/** 도서정보 상세보기 (OrdersService가 사용) **/
+	/** 도서정보 상세보기 **/
 	public BoardDTO detail(Integer id) {
 		return sql.selectOne("Board.detail", id);
 	}
@@ -51,16 +51,14 @@ public class BoardRepository {
 		sql.delete("Board.goDelete", id);
 	}
 	
-	/** (신규) 재고 1 감소 (OrdersService가 사용) **/
+	/** 재고 1 감소 **/
     public int decreaseStock(Integer bookid) {
         return sql.update("Board.decreaseStock", bookid);
     }
 	
-	/** 도서정보 수정하기**/
+	/** 도서정보 수정하기 **/
 	public void goUpdate(BoardDTO boardDTO) {
-		sql.update("Board.goUpdate",boardDTO);
-		
+		sql.update("Board.goUpdate",boardDTO);	
 	}
-
 }
 

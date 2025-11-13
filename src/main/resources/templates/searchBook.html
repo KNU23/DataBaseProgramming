@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<head th:replace="~{layout/header :: commonHead(title='도서 검색 (API)')}"></head>
+<body>
+    <nav th:replace="~{layout/header :: commonNav}"></nav>
+
+    <div class="container mt-5">
+        <h2>도서 검색 (Kakao API)</h2>
+        <hr>
+
+        <form th:action="@{/search}" method="post" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="keyword" class="form-control" placeholder="도서명 입력" th:value="${keyword}" required>
+                <button class="btn btn-primary" type="submit">
+                    <i class="bi bi-search"></i> 검색
+                </button>
+            </div>
+        </form>
+
+        <div th:if="${books != null}">
+            <h4 class="mb-3">검색 결과: <span th:text="${books.size()}">0</span>건</h4>
+            
+            <div class="row row-cols-1 row-cols-md-2 g-4">
+                <div class="col" th:each="book : ${books}">
+                    <div class="card h-100 shadow-sm">
+                        <div class="row g-0">
+                            <div class="col-md-4 d-flex align-items-center justify-content-center bg-light">
+                                <img th:if="${book.coverImagePath != null}" th:src="${book.coverImagePath}" 
+                                     alt="책 표지" class="img-fluid" style="max-height: 150px;">
+                                <span th:unless="${book.coverImagePath != null}">이미지 없음</span>
+                            </div>
+                            
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h5 class="card-title text-truncate" th:text="${book.bookname}">책 제목</h5>
+                                    <p class="card-text small mb-1">
+                                        <span class="fw-bold">저자:</span> <span th:text="${book.author}">저자</span>
+                                    </p>
+                                    <p class="card-text small mb-1">
+                                        <span class="fw-bold">출판사:</span> <span th:text="${book.publisher}">출판사</span>
+                                    </p>
+                                    <p class="card-text small mb-2">
+                                        <span class="fw-bold">가격:</span> <span th:text="${book.price}">0</span>원
+                                    </p>
+
+                                    <form th:action="@{/addApiBook}" method="post">
+                                        <input type="hidden" name="bookname" th:value="${book.bookname}">
+                                        <input type="hidden" name="author" th:value="${book.author}">
+                                        <input type="hidden" name="publisher" th:value="${book.publisher}">
+                                        <input type="hidden" name="price" th:value="${book.price}">
+                                        <input type="hidden" name="description" th:value="${book.description}">
+                                        <input type="hidden" name="coverImagePath" th:value="${book.coverImagePath}">
+                                        <input type="hidden" name="stock" value="10">
+                                        
+                                        <button type="submit" class="btn btn-sm btn-success w-100">
+                                            <i class="bi bi-plus-lg"></i> 도서 등록
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div th:if="${books.isEmpty()}" class="alert alert-warning mt-3">
+                검색 결과가 없습니다.
+            </div>
+        </div>
+    </div>
+    
+    <th:block th:replace="~{layout/footer :: commonScripts}"></th:block>
+</body>
+</html>

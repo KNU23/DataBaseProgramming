@@ -10,10 +10,8 @@
         <h2>신규 주문</h2>
         <hr>
 
-        <!-- (1. th:object="${ordersDTO}" 추가) -->
         <form th:action="@{/addOrder}" method="post" th:object="${ordersDTO}">
             
-            <!-- (2. 폼 바인딩을 위한 hidden 필드 추가) -->
             <input type="hidden" th:field="*{bookid}" />
             <input type="hidden" th:field="*{saleprice}" />
 
@@ -32,11 +30,10 @@
             </div>
 
             <!-- 고객 선택 -->
-            <div class.="mb-3">
+            <div class="mb-3">
                 <label for="customerSelect" class="form-label fw-bold">
                     <i class="bi bi-person"></i> 고객 선택
                 </label>
-                <!-- (3. th:field="*{custid}" 적용) -->
                 <select id="customerSelect" class="form-select" th:field="*{custid}"
                         th:classappend="${#fields.hasErrors('custid')} ? 'is-invalid' : ''">
                     <option value="">-- 고객을 선택해주세요 --</option>
@@ -46,7 +43,6 @@
                         박지성 (000-5000-0001)
                     </option>
                 </select>
-                <!-- (4. 유효성 검사 에러 메시지 표시) -->
                 <div th:if="${#fields.hasErrors('custid')}" th:errors="*{custid}" class="invalid-feedback"></div>
             </div>
 

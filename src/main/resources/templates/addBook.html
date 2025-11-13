@@ -10,8 +10,6 @@
         <h2>도서정보 추가</h2>
         <hr>
         
-        <!-- 1. enctype="multipart/form-data" 추가 (파일 업로드 필수) -->
-        <!-- 2. th:object="${boardDTO}" 설정 (유효성 검사) -->
         <form th:action="@{/addBook}" method="post" th:object="${boardDTO}" enctype="multipart/form-data">
             
             <!-- 책 제목 -->
@@ -19,6 +17,7 @@
                 <label for="bookname" class="form-label">책 제목</label>
                 <input type="text" id="bookname" th:field="*{bookname}" class="form-control"
                        th:classappend="${#fields.hasErrors('bookname')} ? 'is-invalid' : ''">
+                       
                 <!-- 유효성 검사 에러 메시지 -->
                 <div th:if="${#fields.hasErrors('bookname')}" th:errors="*{bookname}" class="invalid-feedback"></div>
             </div>
@@ -40,6 +39,7 @@
             </div>
             
             <div class="row">
+            
                 <!-- 가격 -->
                 <div class="col-md-6 mb-3">
                     <label for="price" class="form-label">책 가격</label>
@@ -47,6 +47,7 @@
                            th:classappend="${#fields.hasErrors('price')} ? 'is-invalid' : ''">
                     <div th:if="${#fields.hasErrors('price')}" th:errors="*{price}" class="invalid-feedback"></div>
                 </div>
+                
                 <!-- 재고 -->
                 <div class="col-md-6 mb-3">
                     <label for="stock" class="form-label">재고</label>
@@ -56,7 +57,7 @@
                 </div>
             </div>
 
-            <!-- 3. 도서 표지 이미지 파일 입력 -->
+            <!-- 도서 표지 이미지 파일 입력 -->
             <div class="mb-3">
                 <label for="coverImageFile" class="form-label">도서 표지</label>
                 <input type="file" id="coverImageFile" th:field="*{coverImageFile}" class="form-control" accept="image/*">

@@ -10,19 +10,16 @@
         <h2>도서정보 수정</h2>
         <hr>
         
-        <!-- 1. enctype="multipart/form-data" 추가 -->
-        <!-- 2. th:object="${bookDetail}"로 변경 (컨트롤러와 일치) -->
         <form th:action="@{/goUpdate/{id}(id=${bookDetail.bookid})}" method="post" th:object="${bookDetail}" enctype="multipart/form-data">
             
             <!-- Book ID (수정 불가) -->
             <div class="mb-3">
                 <label for="bookid" class="form-label">Book ID (수정 불가)</label>
                 <input type="text" id="bookid" class="form-control" th:field="*{bookid}" readonly disabled>
-                <!-- 폼 전송을 위한 hidden ID -->
                 <input type="hidden" th:field="*{bookid}" />
             </div>
             
-            <!-- 3. 기존 이미지 경로 (파일 미선택 시 이 값 유지) -->
+            <!-- 기존 이미지 경로 (파일 미선택 시 이 값 유지) -->
             <input type="hidden" th:field="*{coverImagePath}" />
 
             <!-- 책 제목 -->
@@ -40,6 +37,7 @@
                        th:classappend="${#fields.hasErrors('publisher')} ? 'is-invalid' : ''">
                 <div th:if="${#fields.hasErrors('publisher')}" th:errors="*{publisher}" class="invalid-feedback"></div>
             </div>
+            
             <!-- 저자 -->
             <div class="mb-3">
                 <label for="author" class="form-label">저자</label>
@@ -47,6 +45,7 @@
                        th:classappend="${#fields.hasErrors('author')} ? 'is-invalid' : ''">
                 <div th:if="${#fields.hasErrors('author')}" th:errors="*{author}" class="invalid-feedback"></div>
             </div>
+            
             <!-- 가격/재고 -->
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -63,12 +62,13 @@
                 </div>
             </div>
             
-            <!-- 4. 도서 표지 이미지 파일 입력 -->
+            <!-- 도서 표지 이미지 파일 입력 -->
             <div class="mb-3">
                 <label for="coverImageFile" class="form-label">
                     도서 표지 (새 이미지 등록)
                 </label>
-                <!-- 5. 현재 이미지 미리보기 -->
+                
+                <!-- 현재 이미지 미리보기 -->
                 <div th:if="*{coverImagePath != null and coverImagePath != ''}" class="mb-2">
                     <img th:src="*{coverImagePath}" alt="Current Cover" class="img-thumbnail" style="max-height: 150px;">
                 </div>
@@ -88,7 +88,6 @@
                 <button type="button" class="btn btn-secondary" onclick="goList()">
                     <i class="bi bi-list-ul"></i> 목록으로
                 </button>
-                <!-- 6. type="submit"으로 변경 (JS대신 폼 전송) -->
                 <button type="submit" class="btn btn-success">
                     <i class="bi bi-check-lg"></i> 수정 완료
                 </button>
@@ -99,12 +98,9 @@
     <th:block th:replace="~{layout/footer :: commonScripts}"></th:block>
 
     <script th:inline="javascript">
-        /*<![CDATA[*/
-        // '목록으로' 버튼
         const goList = () => {
             location.href = "/list";
         }
-        /*]]>*/
     </script>
 </body>
 </html>

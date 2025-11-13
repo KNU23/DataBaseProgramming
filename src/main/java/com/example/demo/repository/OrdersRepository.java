@@ -13,16 +13,12 @@ public class OrdersRepository {
 
     private final SqlSessionTemplate sql;
 
-    /**
-     * 주문 생성
-     */
+	/** 주문 생성 **/
     public void insert(OrdersDTO ordersDTO) {
         sql.insert("Orders.insert", ordersDTO);
     }
 
-    /**
-     * 주문 목록 상세 조회 (JOIN)
-     */
+	/** 주문 목록 상세 조회 **/
     public List<OrderDetailsDTO> getAllWithDetails() {
         return sql.selectList("Orders.getAllWithDetails");
     }

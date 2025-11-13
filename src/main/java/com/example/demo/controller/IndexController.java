@@ -15,11 +15,9 @@ public class IndexController {
 		return "index";
 	}
 	
-	/**
-	 * (신규) 커스텀 로그인 페이지 매핑
-	 */
+	/** 커스텀 로그인 매핑 **/
 	@GetMapping("/login")
 	public String login() {
-	    return "login"; // templates/login.html
+	    return "login"; 
 	}
 }
