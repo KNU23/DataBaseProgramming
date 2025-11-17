@@ -1,44 +1,62 @@
 package com.example.demo.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional; 
-import com.example.demo.dto.BoardDTO;
-import com.example.demo.dto.OrderDetailsDTO;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example.demo.dto.CartDTO;
+import com.example.demo.dto.CustomerDTO;
 import com.example.demo.dto.OrdersDTO;
-import com.example.demo.repository.BoardRepository;
-import com.example.demo.repository.OrdersRepository;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class OrdersService {
 
-    private final OrdersRepository ordersRepository;
-    private final BoardRepository boardRepository; 
+    private final SqlSessionTemplate sql;
+    private final CartService cartService;
 
-	/** 주문 목록 조회 **/
-    public List<OrderDetailsDTO> getOrderList() {
-        return ordersRepository.getAllWithDetails();
+    // 장바구니에 있는 모든 상품 주문
+    @Transactional
+    public void orderCart(int custid) throws Exception {
+        
+        // 장바구니 목록 가져오기
+        List<CartDTO> cartList = cartService.getCartList(custid);
+        if (cartList.isEmpty()) {
+            throw new Exception("장바구니가 비어있습니다.");
+        }
+
+        // 총 가격 계산 및 재고 체크
+        int totalPrice = 0;
+        for (CartDTO cart : cartList) {
+            totalPrice += cart.getTotalPrice();
+            int result = sql.update("Board.decreaseStock", cart.getBookid()); 
+            if(result == 0) throw new Exception("재고 부족: 도서 ID " + cart.getBookid());
+        }
+
+        // 주문정보 생성 (Orders)
+        OrdersDTO order = new OrdersDTO();
+        order.setCustid(custid);
+        order.setTotalPrice(totalPrice);
+        sql.insert("Orders.insertOrder", order); 
+
+        // 주문 상세정보 저장 (OrderDetails)
+        Map<String, Object> params = new HashMap<>();
+        params.put("orderId", order.getOrderid());
+        params.put("details", cartList);
+        sql.insert("Orders.insertOrderDetails", params);
+
+        // 장바구니 비우기
+        sql.delete("Cart.clearCart", custid);
     }
-
-	/** 신규 주문 생성 **/
-    @Transactional 
-    public void createOrder(OrdersDTO ordersDTO) throws Exception {
-        
-        BoardDTO book = boardRepository.detail(ordersDTO.getBookid());
-        if (book == null || book.getStock() <= 0) {
-            throw new Exception("재고가 부족하거나 존재하지 않는 도서입니다. (ID: " + ordersDTO.getBookid() + ")");
-        }
-
-        int updatedRows = boardRepository.decreaseStock(ordersDTO.getBookid());
-        
-        if (updatedRows == 0) {
-             throw new Exception("재고 차감에 실패했습니다. (ID: " + ordersDTO.getBookid() + ")");
-        }
-
-        ordersDTO.setOrderdate(new java.sql.Date(System.currentTimeMillis()));
-        ordersRepository.insert(ordersDTO);
-
+    
+    // 내 주문 내역 조회
+    public List<Map<String, Object>> getMyOrders(int custid) {
+        return sql.selectList("Orders.getMyOrders", custid);
     }
 }

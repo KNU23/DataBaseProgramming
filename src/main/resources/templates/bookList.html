@@ -117,18 +117,30 @@
                     
                     <!-- 주문 버튼 (로그인 시에만 보이도록) -->
                     <td class="text-center">
-                        <a th:href="@{/addOrder/{bookid}(bookid=${bookinfo.bookid})}" 
-                           class="btn btn-sm btn-success"
-                           th:if="${bookinfo.stock > 0}"
-                           sec:authorize="isAuthenticated()"> <!-- (보안) -->
-                           <i class="bi bi-cart-plus"></i>
-                        </a>
-                        <button class="btn btn-sm btn-outline-secondary" disabled 
-                                th:if="${bookinfo.stock <= 0}"
-                                sec:authorize="isAuthenticated()"> <!-- (보안) -->
-                           <i class="bi bi-cart-x"></i>
-                        </button>
-                    </td>
+    
+					    <div th:if="${bookinfo.stock > 0}" sec:authorize="isAuthenticated()" class="d-flex justify-content-center gap-2">
+					        
+					        <form action="/cart/add" method="post">
+					            <input type="hidden" name="bookid" th:value="${bookinfo.bookid}">
+					            <input type="hidden" name="count" value="1"> <button type="submit" class="btn btn-sm btn-outline-primary" title="장바구니 담기" onclick="return confirm('장바구니에 담으시겠습니까?');">
+					                <i class="bi bi-cart-plus"></i>
+					            </button>
+					        </form>
+					
+					        <a th:href="@{/addOrder/{bookid}(bookid=${bookinfo.bookid})}" 
+					           class="btn btn-sm btn-success"
+					           title="바로 주문">
+					           <i class="bi bi-credit-card"></i>
+					        </a>
+					    </div>
+					
+					    <button class="btn btn-sm btn-secondary" disabled 
+					            th:if="${bookinfo.stock <= 0}"
+					            sec:authorize="isAuthenticated()">
+					       <i class="bi bi-x-circle"></i> 품절
+					    </button>
+					
+					</td>
                 </tr>
                 
                 <!-- 데이터 없을 때 -->

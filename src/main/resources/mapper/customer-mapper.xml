@@ -36,6 +36,12 @@
     <delete id="delete" parameterType="int">
         DELETE FROM customer WHERE custid = #{id}
     </delete>
+    
+    <select id="findByEmail" parameterType="string" resultType="customer">
+    	SELECT custid, name, address, phone, email
+      	FROM customer
+     	WHERE email = #{email}
+</select>
 
 </mapper>
 

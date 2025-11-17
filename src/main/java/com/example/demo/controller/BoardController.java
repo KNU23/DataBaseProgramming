@@ -57,7 +57,6 @@ public class BoardController {
 	                   BindingResult bindingResult, 
 	                   RedirectAttributes redirectAttributes) {
 		
-		// 유효성 검사 실패 시, 폼 페이지로 다시 이동
 		if (bindingResult.hasErrors()) {
 			return "addBook"; 
 		}
@@ -91,7 +90,7 @@ public class BoardController {
 		return "updateBook";
 	}
 	
-	/** 도서정보 수정 및 저장 */
+	/** 도서정보 수정 및 저장 **/
 	@PostMapping("/goUpdate/{id}")
 	public String goUpdate(@PathVariable("id") Integer id,
 	                       @Valid @ModelAttribute("bookDetail") BoardDTO boardDTO, 
@@ -101,7 +100,6 @@ public class BoardController {
 		
 		boardDTO.setBookid(id);
 
-        // 유효성 검사 실패 시
 		if (bindingResult.hasErrors()) {
 			return "updateBook"; 
 		}
@@ -111,13 +109,13 @@ public class BoardController {
 		return "redirect:/list";
 	}
 	
-	/** 도서 검색 페이지 이동 */
+	/** 도서 검색 페이지 이동 **/
 	@GetMapping("/search")
 	public String searchPage() {
 		return "searchBook";
 	}
 	
-	/** 도서 검색 수행 */
+	/** 도서 검색 수행 **/
 	@PostMapping("/search")
 	public String search(@RequestParam("keyword") String keyword, Model model) {
 		List<BoardDTO> books = bookApiService.searchBooks(keyword);
@@ -128,7 +126,7 @@ public class BoardController {
 		return "searchBook";
 	}
 	
-	/** API 검색 결과 DB 저장 */
+	/** API 검색 결과 DB 저장 **/
 	@PostMapping("/addApiBook")
 	public String addApiBook(@ModelAttribute BoardDTO boardDTO, RedirectAttributes redirectAttributes) {
 		

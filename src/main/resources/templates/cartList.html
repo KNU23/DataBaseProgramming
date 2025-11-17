@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<head th:replace="~{layout/header :: commonHead(title='장바구니')}"></head>
+<body>
+    <nav th:replace="~{layout/header :: commonNav}"></nav>
+
+    <div class="container mt-5">
+        <h2><i class="bi bi-cart4"></i> 나의 장바구니</h2>
+        <hr>
+        
+        <div th:if="${param.error}" class="alert alert-danger">
+            주문 실패: [[${param.error}]]
+        </div>
+
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>도서명</th>
+                    <th>수량</th>
+                    <th>가격</th>
+                    <th>합계</th>
+                    <th>관리</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${cartList}">
+                    <td>
+                        <img th:src="${item.coverImagePath}" width="40" class="me-2">
+                        <span th:text="${item.bookname}"></span>
+                    </td>
+                    <td th:text="${item.count} + ' 권'"></td>
+                    <td th:text="${#numbers.formatInteger(item.price, 0, 'COMMA')} + '원'"></td>
+                    <td th:text="${#numbers.formatInteger(item.totalPrice, 0, 'COMMA')} + '원'" class="fw-bold"></td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-danger"><i class="bi bi-trash"></i> 삭제</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="d-flex justify-content-end mt-4">
+            <form action="/cart/order" method="post">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="bi bi-credit-card"></i> 전체 주문하기
+                </button>
+            </form>
+        </div>
+    </div>
+    <th:block th:replace="~{layout/footer :: commonScripts}"></th:block>
+</body>
+</html>

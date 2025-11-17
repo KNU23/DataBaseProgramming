@@ -2,22 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="Orders">
-
-    <!-- 주문 생성 -->
-    <insert id="insert" parameterType="orders">
-        INSERT INTO orders (custid, bookid, saleprice, orderdate)
-        VALUES (#{custid}, #{bookid}, #{saleprice}, #{orderdate})
+    <insert id="insertOrder" parameterType="orders" useGeneratedKeys="true" keyProperty="orderid">
+        INSERT INTO orders (custid, orderdate, total_price, status)
+        VALUES (#{custid}, NOW(), #{totalPrice}, 'ORDERED')
     </insert>
 
-    <!-- 주문 목록 상세 조회 (JOIN) -->
-    <select id="getAllWithDetails" resultType="OrderDetailsDTO">
-        SELECT o.orderid, o.saleprice, o.orderdate,
-               c.name AS customerName,
-               b.bookname AS bookName
-          FROM orders o
-          JOIN customer c ON o.custid = c.custid
-          JOIN book b ON o.bookid = b.bookid
-      ORDER BY o.orderdate DESC, o.orderid DESC
-    </select>
+    <insert id="insertOrderDetails" parameterType="map">
+        INSERT INTO order_details (orderid, bookid, count, order_price)
+        VALUES 
+        <foreach collection="details" item="item" separator=",">
+            (#{orderId}, #{item.bookid}, #{item.count}, #{item.price})
+        </foreach>
+    </insert>
 
+    <select id="getMyOrders" parameterType="int" resultType="map">
+        SELECT o.orderid, o.orderdate, o.total_price, o.status,
+               (SELECT COUNT(*) FROM order_details WHERE orderid = o.orderid) as bookCount,
+               (SELECT b.bookname FROM order_details od JOIN book b ON od.bookid = b.bookid WHERE od.orderid = o.orderid LIMIT 1) as repBookName
+          FROM orders o
+         WHERE o.custid = #{custid}
+      ORDER BY o.orderdate DESC
+    </select>
 </mapper>

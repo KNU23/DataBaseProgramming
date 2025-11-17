@@ -25,10 +25,13 @@ public class SecurityConfig {
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/css/**", "/js/**", "/error", "/uploads/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/", "/list", "/bookid/**").permitAll()
-                .requestMatchers("/login").permitAll()	
+                .requestMatchers("/login").permitAll()
+                
+                .requestMatchers("/cart/**", "/orderList").authenticated()
                 .requestMatchers("/search", "/addApiBook").hasAnyRole("ADMIN", "USER")                
                 .requestMatchers("/customers", "/addCustomer").hasAnyRole("ADMIN", "USER")            
                 .requestMatchers("/**").hasRole("ADMIN")
+                
                 .anyRequest().authenticated()	
             )
             
