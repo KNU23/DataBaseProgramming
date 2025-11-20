@@ -48,7 +48,7 @@
 	    LIMIT #{offset}, #{limit}
 	</select>
 	  
-	<insert id="save" parameterType="board">
+	<insert id="save" parameterType="board" useGeneratedKeys="true" keyProperty="bookid">
 		  INSERT INTO book ( 
 		  					 bookname, 
 		  					 publisher, 

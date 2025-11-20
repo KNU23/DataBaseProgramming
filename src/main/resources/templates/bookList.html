@@ -120,12 +120,13 @@
     
 					    <div th:if="${bookinfo.stock > 0}" sec:authorize="isAuthenticated()" class="d-flex justify-content-center gap-2">
 					        
-					        <form action="/cart/add" method="post">
-					            <input type="hidden" name="bookid" th:value="${bookinfo.bookid}">
-					            <input type="hidden" name="count" value="1"> <button type="submit" class="btn btn-sm btn-outline-primary" title="장바구니 담기" onclick="return confirm('장바구니에 담으시겠습니까?');">
-					                <i class="bi bi-cart-plus"></i>
-					            </button>
-					        </form>
+							<form th:action="@{/cart/add}" method="post">
+							    <input type="hidden" name="bookid" th:value="${bookinfo.bookid}">
+							    <input type="hidden" name="count" value="1"> 
+							    <button type="submit" class="btn btn-sm btn-outline-primary" ...>
+							        <i class="bi bi-cart-plus"></i>
+							    </button>
+							</form>
 					
 					        <a th:href="@{/addOrder/{bookid}(bookid=${bookinfo.bookid})}" 
 					           class="btn btn-sm btn-success"

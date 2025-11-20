@@ -9,18 +9,23 @@
 
     <div class="hero-section">
         <div class="container">
+        	<br><br>
             <h1><i class="bi bi-book-half"></i> MADANG BOOKSTORE</h1>
+            <br><br>
             <p class="lead mb-4">당신의 인생 책을 마당서점에서 찾아보세요.</p>
             
-            <div class="search-box">
-                <form action="/list" method="get" class="d-flex">
-                    <input type="text" name="keyword" class="form-control form-control-lg me-2" 
-                           placeholder="도서명, 저자 또는 출판사를 입력하세요" aria-label="Search">
-                    <button class="btn btn-warning btn-lg fw-bold text-dark" type="submit">
-                        <i class="bi bi-search"></i> 검색
-                    </button>
-                </form>
-            </div>
+			<div class="search-box">
+			    <form action="/list" method="get">
+			        <div class="input-group input-group-lg">
+			            <input type="text" name="keyword" class="form-control" 
+			                   placeholder="도서명, 저자 또는 출판사를 입력하세요" aria-label="Search">
+			            <button class="btn btn-light fw-bold text-dark" type="submit">
+			                <i class="bi bi-search"></i> 검색
+			            </button>
+			        </div>
+			    </form>
+			    <br><br>
+			</div>
         </div>
     </div>
 
@@ -33,7 +38,7 @@
                 </a>
             </div>
             
-            <div class="col-md-4" sec:authorize="hasRole('ADMIN')">
+            <div class="col-md-4" sec:authorize="isAuthenticated()">
                 <a href="/addBook" class="btn btn-success w-100 p-3 shadow-sm quick-menu-btn">
                     <i class="bi bi-plus-circle fs-4"></i><br>도서 등록하기
                 </a>

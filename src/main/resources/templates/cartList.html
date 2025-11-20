@@ -39,11 +39,11 @@
         </table>
 
         <div class="d-flex justify-content-end mt-4">
-            <form action="/cart/order" method="post">
-                <button type="submit" class="btn btn-primary btn-lg">
-                    <i class="bi bi-credit-card"></i> 전체 주문하기
-                </button>
-            </form>
+			<form th:action="@{/cart/order}" method="post">
+			    <button type="submit" class="btn btn-primary btn-lg">
+			        <i class="bi bi-credit-card"></i> 전체 주문하기
+			    </button>
+			</form>
         </div>
     </div>
     <th:block th:replace="~{layout/footer :: commonScripts}"></th:block>

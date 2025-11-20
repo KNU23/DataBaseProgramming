@@ -70,7 +70,7 @@
                     </a>
                     
                     <!-- ADMIN일 때만 수정/삭제 버튼이 보임 -->
-                    <div class="d-flex gap-2" sec:authorize="hasRole('ADMIN')">
+                    <div class="d-flex gap-2" sec:authorize="isAuthenticated()">
                         <button class="btn btn-warning" 
                                 data-bs-toggle="modal" 
                                 data-bs-target="#confirmUpdateModal"
@@ -109,7 +109,7 @@
     </div>
 
     <!-- 삭제 확인 Modal (ADMIN일 때만 렌더링) -->
-    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" sec:authorize="hasRole('ADMIN')">
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" sec:authorize="isAuthenticated()">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

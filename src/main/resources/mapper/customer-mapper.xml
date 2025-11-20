@@ -18,9 +18,9 @@
     </select>
 
     <!-- 고객 등록 -->
-    <insert id="insert" parameterType="customer">
-        INSERT INTO customer (name, address, phone)
-        VALUES (#{name}, #{address}, #{phone})
+	<insert id="insert" parameterType="customer">
+        INSERT INTO customer (name, address, phone, email)
+        VALUES (#{name}, #{address}, #{phone}, #{email})
     </insert>
 
     <!-- 고객 정보 수정 -->

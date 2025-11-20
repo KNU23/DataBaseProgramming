@@ -27,10 +27,9 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/", "/list", "/bookid/**").permitAll()
                 .requestMatchers("/login").permitAll()
                 
-                .requestMatchers("/cart/**", "/orderList").authenticated()
-                .requestMatchers("/search", "/addApiBook").hasAnyRole("ADMIN", "USER")                
-                .requestMatchers("/customers", "/addCustomer").hasAnyRole("ADMIN", "USER")            
-                .requestMatchers("/**").hasRole("ADMIN")
+
+                .requestMatchers("/cart/**", "/orderList", "/search", "/addApiBook", "/customers", "/addCustomer").authenticated()                
+                .requestMatchers("/addBook", "/goUpdate/**", "/goDelete/**").authenticated()
                 
                 .anyRequest().authenticated()	
             )
