@@ -5,8 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 
-// DTO 임포트
 import com.example.demo.dto.BoardDTO;
 import com.example.demo.dto.BookListResponseDTO;
 import com.example.demo.dto.PagingInfoDTO;
@@ -19,10 +20,12 @@ import lombok.RequiredArgsConstructor;
 public class BoardService {
 	
 	private final BoardRepository boardRepository;
+	private final BookApiService bookApiService;
 	private final FileStorageService fileStorageService; 
 
 	private static final int PAGE_SIZE = 10; 
 	private static final int PAGE_BLOCK_SIZE = 5; 
+	private final SqlSessionTemplate sql;
 	
 	/** 도서 목록 불러오기 (페이징 + 검색 + 정렬) **/
 	public BookListResponseDTO getList(String keyword, int page, String sort, String order) {
@@ -76,5 +79,36 @@ public class BoardService {
 	    
 		boardRepository.goUpdate(boardDTO);
 	}
+	
+	/**
+     * 인기 도서 100권으로 목록 초기화
+     * @Scheduled
+     * (사용자가 없더라도 서버가 켜져 있으면 실행됨)
+     */
+	@Scheduled(cron = "0 0/30 * * * *") 
+    @Transactional
+    public void refreshToPopularBooks() {
+        System.out.println("[스케줄러 실행] 도서 목록을 베스트셀러 100권으로 재설정합니다...");
+
+        // 1. 장바구니 비우기
+        sql.delete("Cart.deleteAll"); 
+        
+        // 2. 주문 상세 내역 비우기
+        sql.delete("Orders.deleteAllDetails"); 
+        
+        // 3. 주문 내역 비우기
+        sql.delete("Orders.deleteAllOrders");
+
+        // 4. 그 다음, 책 전체 삭제
+        boardRepository.deleteAll();
+
+        // 카카오 API 호출 및 저장
+        List<BoardDTO> newBooks = bookApiService.fetchBooks("베스트셀러", 100);
+        for (BoardDTO book : newBooks) {
+            boardRepository.save(book);
+        }
+        
+        System.out.println("[스케줄러 완료] 갱신 완료.");
+    }
 }
 

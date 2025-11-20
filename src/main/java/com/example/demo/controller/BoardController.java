@@ -33,8 +33,8 @@ public class BoardController {
 	
 	private final BoardService boardService;
 	private final BookApiService bookApiService;
-	private final CartService cartService; // <-- 1. 주입
-    private final SqlSessionTemplate sql; // <-- 1. 주입
+	private final CartService cartService; 
+    private final SqlSessionTemplate sql; 
 	
 	@GetMapping("/list")
 	public String getList(Model model, 
@@ -54,13 +54,14 @@ public class BoardController {
 		return "bookList";
 	}
 	
+	/** 도서정보 추가하기 **/
 	@GetMapping("/addBook")
 	public String addBook(Model model) {
 		model.addAttribute("boardDTO", new BoardDTO());
 		return "addBook";
 	}
 	
-	
+	/** 도서정보 저장하기 **/
 	@PostMapping("/addBook")
 	public String save(@Valid @ModelAttribute BoardDTO boardDTO, 
 	                   BindingResult bindingResult, 
@@ -135,45 +136,53 @@ public class BoardController {
 		return "searchBook";
 	}
 	
-	/** API 검색 결과 DB 저장 (및 장바구니 추가) **/
+	/** API 검색 결과 DB 저장 및 장바구니 추가 **/
 	@PostMapping("/addApiBook")
 	public String addApiBook(@ModelAttribute BoardDTO boardDTO, 
                              RedirectAttributes redirectAttributes,
-                             @AuthenticationPrincipal OAuth2User principal) { // <-- 2. 매개변수 추가
+                             @AuthenticationPrincipal OAuth2User principal) { 
 		
-		// 1. (기존 로직) API로 검색한 책을 우리 DB에 저장
-        // (1단계 수정 덕분에 boardDTO 객체에 새로 생성된 bookid가 자동으로 채워집니다)
+		// API로 검색한 책을 우리 DB에 저장
 		boardService.save(boardDTO);
 		
-        // 2. (신규 로직) 방금 저장된 bookid로 장바구니에 추가
+        // 방금 저장된 bookid로 장바구니에 추가
         if (principal != null) {
             try {
-                // 3. 현재 로그인한 사용자(custid) 찾기
+                // 현재 로그인한 사용자(custid) 찾기
                 String email = "kakao_" + principal.getAttributes().get("id");
                 CustomerDTO customer = sql.selectOne("Customer.findByEmail", email);
 
                 if (customer != null && boardDTO.getBookid() > 0) {
-                    // 4. 장바구니 DTO 생성 및 CartService 호출
                     CartDTO cartDTO = new CartDTO();
                     cartDTO.setCustid(customer.getCustid());
                     cartDTO.setBookid(boardDTO.getBookid());
-                    cartDTO.setCount(1); // 기본 수량 1로 설정
+                    cartDTO.setCount(1); 
                     
                     cartService.addCart(cartDTO);
                     
-                    // 5. 장바구니 페이지로 리다이렉트
                     return "redirect:/cart";
                 }
             } catch (Exception e) {
-                // 오류 발생 시
                 redirectAttributes.addFlashAttribute("error", "장바구니 추가 중 오류가 발생했습니다.");
                 return "redirect:/list";
             }
         }
 		
-        // 5. (기존 로직 - 로그인 안됐거나 오류 시)
 		redirectAttributes.addFlashAttribute("msg", "도서가 성공적으로 등록되었습니다.");
 		return "redirect:/list";
 	}
+	
+	/** 도서 목록 100권 리셋 **/
+    @GetMapping("/refresh-books")
+    public String refreshBooks(RedirectAttributes redirectAttributes) {
+        try {
+            boardService.refreshToPopularBooks();
+            redirectAttributes.addFlashAttribute("msg", "도서 목록이 인기 도서 100권으로 재설정되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "도서 목록 갱신 중 오류가 발생했습니다. (주문 내역 등이 원인일 수 있습니다)");
+        }
+        return "redirect:/list";
+    }
 }
 

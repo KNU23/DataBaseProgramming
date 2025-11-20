@@ -23,4 +23,13 @@
          WHERE o.custid = #{custid}
       ORDER BY o.orderdate DESC
     </select>
+    
+    <delete id="deleteAllDetails">
+        DELETE FROM order_details
+    </delete>
+
+    <delete id="deleteAllOrders">
+        DELETE FROM orders
+    </delete>
+    
 </mapper>

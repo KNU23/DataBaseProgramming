@@ -69,7 +69,7 @@
 	</insert>
 	  
 	<select id="detail" parameterType="int" resultType="board">
-	  	SELECT * FROM book
+	  	 SELECT * FROM book
 	     WHERE bookid = #{id} 
 	</select>
 	  
@@ -94,6 +94,10 @@
 	  	  	 	 cover_image_path = #{coverImagePath} 
 	  	   WHERE bookid     = #{bookid}
 	</update>
-	  
+	
+	<delete id="deleteAll">
+        DELETE FROM book
+    </delete>
+	
 </mapper>
 

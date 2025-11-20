@@ -60,5 +60,10 @@ public class BoardRepository {
 	public void goUpdate(BoardDTO boardDTO) {
 		sql.update("Board.goUpdate",boardDTO);	
 	}
+	
+	/** 도서목록 전부삭제 **/
+	public void deleteAll() {
+        sql.delete("Board.deleteAll");
+    }
 }
 

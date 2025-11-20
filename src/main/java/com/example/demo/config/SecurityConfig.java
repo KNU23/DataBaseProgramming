@@ -24,10 +24,9 @@ public class SecurityConfig {
     		/** http 권한요청 **/
             .authorizeHttpRequests(authorize -> authorize
                 .requestMatchers("/css/**", "/js/**", "/error", "/uploads/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/", "/list", "/bookid/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/", "/list", "/bookid/**", "/refresh-books").permitAll()
                 .requestMatchers("/login").permitAll()
                 
-
                 .requestMatchers("/cart/**", "/orderList", "/search", "/addApiBook", "/customers", "/addCustomer").authenticated()                
                 .requestMatchers("/addBook", "/goUpdate/**", "/goDelete/**").authenticated()
                 

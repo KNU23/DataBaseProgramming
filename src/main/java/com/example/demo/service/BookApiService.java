@@ -37,7 +37,7 @@ public class BookApiService {
         ResponseEntity<KakaoBookSearchResponse> response = restTemplate.exchange(
                 url, HttpMethod.GET, entity, KakaoBookSearchResponse.class);
 
-        /**결과 변환 (API DTO -> 우리 프로젝트 BoardDTO) **/
+        /** 결과 변환 (API DTO -> 우리 프로젝트 BoardDTO) **/
         List<BoardDTO> resultList = new ArrayList<>();
         if (response.getBody() != null && response.getBody().getDocuments() != null) {
             for (KakaoBookSearchResponse.Document doc : response.getBody().getDocuments()) {
@@ -54,5 +54,52 @@ public class BookApiService {
             }
         }
         return resultList;
+    }
+    
+    /** 원하는 수량만큼 책을 가져오는 메소드 (예: 100권) **/
+    public List<BoardDTO> fetchBooks(String query, int limit) {
+        List<BoardDTO> allBooks = new ArrayList<>();
+        int size = 50; 
+        int pages = (int) Math.ceil((double) limit / size);
+
+        for (int i = 1; i <= pages; i++) {
+            String url = "https://dapi.kakao.com/v3/search/book?target=title&query=" + query + "&size=" + size + "&page=" + i;            
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "KakaoAK " + kakaoApiKey);
+            HttpEntity<String> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<KakaoBookSearchResponse> response = restTemplate.exchange(
+                    url, HttpMethod.GET, entity, KakaoBookSearchResponse.class);
+
+            if (response.getBody() != null && response.getBody().getDocuments() != null) {
+                for (KakaoBookSearchResponse.Document doc : response.getBody().getDocuments()) {
+                    if (allBooks.size() >= limit) break; 
+
+                    BoardDTO book = new BoardDTO();
+                    
+                    String title = doc.getTitle();
+                    if (title != null && title.length() > 40) { 
+                        title = title.substring(0, 40) + "...";
+                    }
+                    book.setBookname(title);
+                    
+                    String publisher = doc.getPublisher();
+                    if (publisher != null && publisher.length() > 20) {
+                        publisher = publisher.substring(0, 20);
+                    }
+                    
+                    book.setPublisher(publisher);
+                    book.setPublisher(doc.getPublisher());
+                    book.setAuthor(String.join(", ", doc.getAuthors()));
+                    book.setPrice(doc.getPrice());
+                    book.setDescription(doc.getContents());
+                    book.setCoverImagePath(doc.getThumbnail());
+                    book.setStock(10); 
+                    
+                    allBooks.add(book);
+                }
+            }
+        }
+        return allBooks;
     }
 }

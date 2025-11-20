@@ -24,4 +24,8 @@
     <delete id="clearCart" parameterType="int">
         DELETE FROM cart WHERE custid = #{custid}
     </delete>
+    
+    <delete id="deleteAll">
+        DELETE FROM cart
+    </delete>
 </mapper>
