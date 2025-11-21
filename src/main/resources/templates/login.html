@@ -3,24 +3,42 @@
 
 <head th:replace="~{layout/header :: commonHead(title='로그인')}"></head>
 
-<body>
-    <div class="container mt-5" style="max-width: 500px;">
-        <div class="card shadow-sm">
-            <div class="card-body p-5">
-                <h2 class="card-title text-center mb-4">
-                    <i class="bi bi-book-half"></i> 마당서점 로그인
-                </h2>
+<body style="background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1507842217121-9e9f1479b035?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80'); 
+             background-size: cover; background-position: center; background-attachment: fixed;
+             min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0;">
+
+    <div class="container" style="max-width: 420px;">
+        <div class="card border-0 shadow-lg" style="border-radius: 20px; overflow: hidden; backdrop-filter: blur(10px); background-color: rgba(255, 255, 255, 0.95);">
             
-                 <div th:if="${param.logout}" class="alert alert-success" role="alert">
-                    성공적으로 로그아웃되었습니다.
+            <div class="card-body p-5 text-center">
+                <div class="mb-4">
+                    <i class="bi bi-book-half text-primary" style="font-size: 3rem;"></i>
+                    <h3 class="fw-bold mt-2 text-dark">KNU BookStore</h3>
+                    <p class="text-muted small">나만의 서재를 만나보세요</p>
+                </div>
+
+                <div th:if="${param.logout}" class="alert alert-success py-2 small" role="alert">
+                    <i class="bi bi-check-circle-fill me-1"></i> 로그아웃되었습니다.
+                </div>
+                <div th:if="${param.error}" class="alert alert-danger py-2 small" role="alert">
+                    <i class="bi bi-exclamation-circle-fill me-1"></i> 로그인에 실패했습니다.
                 </div>
                 
-                <p class="text-muted mb-4">카카오 계정으로 간편하게 로그인하세요.</p>                
-            	
-				<a href="/oauth2/authorization/kakao" class="btn btn-warning w-100 py-3 fw-bold" style="background-color: #FEE500; border: none; color: #191919;">            		<i class="bi bi-chat-fill me-2"></i> 카카오 로그인
-            	</a>
-            
+                <a href="/oauth2/authorization/kakao" class="btn w-100 py-3 fw-bold shadow-sm mb-4" 
+                   style="background-color: #FEE500; border: none; color: #191919; border-radius: 10px; font-size: 1rem;">
+                    <i class="bi bi-chat-fill me-2"></i> 카카오로 3초 만에 시작하기
+                </a>
+                
+                <hr class="my-4 text-muted">
+                
+                <a href="/" class="text-decoration-none text-secondary small">
+                    <i class="bi bi-arrow-left"></i> 홈으로 돌아가기
+                </a>
             </div>
+        </div>
+        
+        <div class="text-center mt-4 text-white-50 small">
+            &copy; 2024 Madang Bookstore. All rights reserved.
         </div>
     </div>
 

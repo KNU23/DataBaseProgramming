@@ -36,9 +36,9 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
   config-location: classpath:mybatis-config.xml
   
-kakao:
+aladin:
   api:
-    key: 9614e87a6d5cd3cbdbfe08b32a0f50e4
+    key: ttbbw44871233001
   
   
   

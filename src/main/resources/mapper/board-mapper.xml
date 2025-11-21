@@ -98,6 +98,16 @@
 	<delete id="deleteAll">
         DELETE FROM book
     </delete>
+    
+    <select id="findByBookname" parameterType="string" resultType="board">
+        SELECT * FROM book
+         WHERE bookname = #{bookname}
+         LIMIT 1
+    </select>
+    
+    <update id="resetAutoIncrement">
+		ALTER TABLE book AUTO_INCREMENT = 1
+	</update>
 	
 </mapper>
 

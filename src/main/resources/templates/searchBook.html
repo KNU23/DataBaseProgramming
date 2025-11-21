@@ -1,16 +1,16 @@
 <!DOCTYPE html>
 <html xmlns:th="www.thymeleaf.org">
-<head th:replace="~{layout/header :: commonHead(title='도서 검색 (API)')}"></head>
+<head th:replace="~{layout/header :: commonHead(title='도서 검색')}"></head>
 <body>
     <nav th:replace="~{layout/header :: commonNav}"></nav>
 
     <div class="container mt-5">
-        <h2>도서 검색 (Kakao API)</h2>
+        <h2>도서 검색</h2>
         <hr>
 
         <form th:action="@{/search}" method="post" class="mb-4">
             <div class="input-group">
-                <input type="text" name="keyword" class="form-control" placeholder="도서명 입력" th:value="${keyword}" required>
+                <input type="text" name="keyword" class="form-control" placeholder="도서명 입력 (예: 서울)" th:value="${keyword}" required>
                 <button class="btn btn-primary" type="submit">
                     <i class="bi bi-search"></i> 검색
                 </button>
@@ -19,15 +19,26 @@
 
         <div th:if="${books != null}">
             <h4 class="mb-3">검색 결과: <span th:text="${books.size()}">0</span>건</h4>
+            <p class="text-muted small"><i class="bi bi-info-circle"></i> 도서를 클릭하면 상세 정보를 보고 장바구니에 담을 수 있습니다.</p>
             
             <div class="row row-cols-1 row-cols-md-2 g-4">
                 <div class="col" th:each="book : ${books}">
-                    <div class="card h-100 shadow-sm">
+                    <div class="card h-100 shadow-sm" style="cursor: pointer; transition: transform 0.2s;" 
+                         onmouseover="this.style.transform='scale(1.02)'" 
+                         onmouseout="this.style.transform='scale(1)'"
+                         onclick="showBookModal(this)"
+                         th:data-title="${book.bookname}"
+                         th:data-author="${book.author}"
+                         th:data-publisher="${book.publisher}"
+                         th:data-price="${book.price}"
+                         th:data-image="${book.coverImagePath}"
+                         th:data-description="${book.description}">
+                        
                         <div class="row g-0">
-                            <div class="col-md-4 d-flex align-items-center justify-content-center bg-light">
+                            <div class="col-md-4 d-flex align-items-center justify-content-center bg-light p-2">
                                 <img th:if="${book.coverImagePath != null}" th:src="${book.coverImagePath}" 
-                                     alt="책 표지" class="img-fluid" style="max-height: 150px;">
-                                <span th:unless="${book.coverImagePath != null}">이미지 없음</span>
+                                     alt="책 표지" class="img-fluid rounded" style="max-height: 150px;">
+                                <span th:unless="${book.coverImagePath != null}" class="text-muted small">이미지 없음</span>
                             </div>
                             
                             <div class="col-md-8">
@@ -39,23 +50,9 @@
                                     <p class="card-text small mb-1">
                                         <span class="fw-bold">출판사:</span> <span th:text="${book.publisher}">출판사</span>
                                     </p>
-                                    <p class="card-text small mb-2">
-                                        <span class="fw-bold">가격:</span> <span th:text="${book.price}">0</span>원
+                                    <p class="card-text small mb-2 text-danger fw-bold">
+                                        <span th:text="${#numbers.formatInteger(book.price, 0, 'COMMA')}">0</span>원
                                     </p>
-
-                                    <form th:action="@{/addApiBook}" method="post">
-                                        <input type="hidden" name="bookname" th:value="${book.bookname}">
-                                        <input type="hidden" name="author" th:value="${book.author}">
-                                        <input type="hidden" name="publisher" th:value="${book.publisher}">
-                                        <input type="hidden" name="price" th:value="${book.price}">
-                                        <input type="hidden" name="description" th:value="${book.description}">
-                                        <input type="hidden" name="coverImagePath" th:value="${book.coverImagePath}">
-                                        <input type="hidden" name="stock" value="10">
-                                        
-                                        <button type="submit" class="btn btn-sm btn-primary w-100">
-										    <i class="bi bi-cart-plus"></i> 장바구니 담기
-										</button>
-                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -68,7 +65,89 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="bookInfoModal" tabindex="-1" aria-labelledby="bookInfoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookInfoModalLabel"><i class="bi bi-book"></i> 도서 상세 정보</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4 text-center">
+                            <img id="modalImage" src="" class="img-fluid rounded shadow-sm mb-3" style="max-height: 300px;">
+                        </div>
+                        
+                        <div class="col-md-8">
+                            <h4 id="modalTitle" class="fw-bold mb-3">도서 제목</h4>
+                            <ul class="list-unstyled">
+                                <li class="mb-2"><strong>저자:</strong> <span id="modalAuthor"></span></li>
+                                <li class="mb-2"><strong>출판사:</strong> <span id="modalPublisher"></span></li>
+                                <li class="mb-3"><strong>가격:</strong> <span id="modalPrice" class="text-danger fw-bold fs-5"></span>원</li>
+                            </ul>
+                            <hr>
+                            <div class="bg-light p-3 rounded mb-3" style="max-height: 150px; overflow-y: auto;">
+                                <small id="modalDescription" class="text-muted" style="white-space: pre-wrap;">상세 설명</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    
+                    <form th:action="@{/addApiBook}" method="post">
+                        <input type="hidden" name="bookname" id="formBookname">
+                        <input type="hidden" name="author" id="formAuthor">
+                        <input type="hidden" name="publisher" id="formPublisher">
+                        <input type="hidden" name="price" id="formPrice">
+                        <input type="hidden" name="description" id="formDescription">
+                        <input type="hidden" name="coverImagePath" id="formCoverImage">
+                        <input type="hidden" name="stock" value="10">
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-cart-plus"></i> 장바구니 담기
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <th:block th:replace="~{layout/footer :: commonScripts}"></th:block>
+
+    <script>
+        function showBookModal(element) {
+            // 1. 클릭한 요소(카드)의 data 속성에서 정보 가져오기
+            const title = element.getAttribute('data-title');
+            const author = element.getAttribute('data-author');
+            const publisher = element.getAttribute('data-publisher');
+            const price = element.getAttribute('data-price');
+            const image = element.getAttribute('data-image');
+            const description = element.getAttribute('data-description');
+
+            // 2. 모달 화면(UI) 업데이트
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalAuthor').innerText = author;
+            document.getElementById('modalPublisher').innerText = publisher;
+            document.getElementById('modalPrice').innerText = Number(price).toLocaleString();
+            document.getElementById('modalImage').src = image;
+            document.getElementById('modalDescription').innerText = description;
+
+            // 3. 모달 내부 폼(Hidden Input) 업데이트 -> 서버 전송용
+            document.getElementById('formBookname').value = title;
+            document.getElementById('formAuthor').value = author;
+            document.getElementById('formPublisher').value = publisher;
+            document.getElementById('formPrice').value = price;
+            document.getElementById('formDescription').value = description;
+            document.getElementById('formCoverImage').value = image;
+
+            // 4. 모달 띄우기
+            const myModal = new bootstrap.Modal(document.getElementById('bookInfoModal'));
+            myModal.show();
+        }
+    </script>
 </body>
 </html>

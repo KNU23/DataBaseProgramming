@@ -23,7 +23,9 @@ public class SecurityConfig {
         http
     		/** http 권한요청 **/
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/css/**", "/js/**", "/error", "/uploads/**").permitAll()
+                // [수정 1] "/style.css"를 추가하여 비로그인 사용자도 CSS를 볼 수 있게 허용
+                .requestMatchers("/css/**", "/style.css", "/js/**", "/error", "/uploads/**", "/images/**").permitAll()
+                
                 .requestMatchers(HttpMethod.GET, "/", "/list", "/bookid/**", "/refresh-books").permitAll()
                 .requestMatchers("/login").permitAll()
                 
@@ -36,7 +38,8 @@ public class SecurityConfig {
         	/** 로그인 **/
             .oauth2Login(oauth2 -> oauth2
             		.loginPage("/login")
-            		.defaultSuccessUrl("/list", true)
+            		// [수정 2] 로그인 성공 후 이동할 주소를 "/list" -> "/" (홈)으로 변경
+            		.defaultSuccessUrl("/", true) 
             		.userInfoEndpoint(userInfo -> userInfo
             				.userService(customOAuth2UserService)            		    
             		)

@@ -8,10 +8,20 @@
     "name": "servlet.multipart.max-request-size",
     "type": "java.lang.String",
     "description": "A description for 'servlet.multipart.max-request-size'"
-  }, 
+  },
   {
     "name": "servlet.multipart.max-file-size",
     "type": "java.lang.String",
     "description": "A description for 'servlet.multipart.max-file-size'"
-  }
+  },
+  {
+    "name": "aladin.api.key",
+    "type": "java.lang.String",
+    "description": "A description for 'aladin.api.key'"
+  },
+  {
+      "name": "aladin.api.key",
+      "type": "java.lang.String",
+      "description": "A description for 'aladin.api.key'"
+    }
 ]}

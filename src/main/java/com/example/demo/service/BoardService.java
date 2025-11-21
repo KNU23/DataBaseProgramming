@@ -41,7 +41,7 @@ public class BoardService {
 		return new BookListResponseDTO(bookList, pagingInfo);
 	}
 
-	/** 도서 정보 추가하기 (파일 업로드 추가) **/
+	/** 도서 정보 추가하기 (중복 방지 로직 적용) **/
 	@Transactional
 	public void save(BoardDTO boardDTO) {
 		MultipartFile file = boardDTO.getCoverImageFile();
@@ -51,7 +51,16 @@ public class BoardService {
 			boardDTO.setCoverImagePath(imagepath);
 		}
 		
-		boardRepository.save(boardDTO);
+        // 중복 도서 확인 (제목 기준)
+        BoardDTO existingBook = boardRepository.findByBookname(boardDTO.getBookname());
+
+        if (existingBook != null) {
+            // 이미 존재하면 저장하지 않고 기존 ID 사용
+            boardDTO.setBookid(existingBook.getBookid());
+        } else {
+            // 없으면 신규 저장
+            boardRepository.save(boardDTO);
+        }
 	}
 	
 	/** 도서정보 상세보기 **/
@@ -71,9 +80,7 @@ public class BoardService {
 	    
 	    MultipartFile file = boardDTO.getCoverImageFile();
 	    if (file != null && !file.isEmpty()) {
-	    	
 	        String imagePath = fileStorageService.storeFile(file);
-	        
 	        boardDTO.setCoverImagePath(imagePath);
 	    }
 	    
@@ -81,34 +88,41 @@ public class BoardService {
 	}
 	
 	/**
-     * 인기 도서 100권으로 목록 초기화
-     * @Scheduled
-     * (사용자가 없더라도 서버가 켜져 있으면 실행됨)
+     * 인기 도서 목록 갱신 (데이터 보존 모드)
+     * - 장바구니, 주문내역 삭제하지 않음
+     * - 기존에 있는 책은 정보를 업데이트하고, 없는 책만 추가함
      */
 	@Scheduled(cron = "0 0/30 * * * *") 
     @Transactional
     public void refreshToPopularBooks() {
-        System.out.println("[스케줄러 실행] 도서 목록을 베스트셀러 100권으로 재설정합니다...");
+        System.out.println("[스케줄러 실행] 알라딘 인기 도서 정보 갱신 (기존 데이터 유지)...");
 
-        // 1. 장바구니 비우기
-        sql.delete("Cart.deleteAll"); 
+        // [삭제 코드 제거됨] 
+        // sql.delete("Cart.deleteAll"); ... 등등 삭제
+
+        // 1. 알라딘 API 호출 (100권)
+        List<BoardDTO> newBooks = bookApiService.fetchBooks("Bestseller", 100);
         
-        // 2. 주문 상세 내역 비우기
-        sql.delete("Orders.deleteAllDetails"); 
-        
-        // 3. 주문 내역 비우기
-        sql.delete("Orders.deleteAllOrders");
+        int updatedCount = 0;
+        int newCount = 0;
 
-        // 4. 그 다음, 책 전체 삭제
-        boardRepository.deleteAll();
+        // 2. 하나씩 확인하며 갱신
+        for (BoardDTO newBook : newBooks) {
+            // 이미 등록된 책인지 확인
+            BoardDTO existingBook = boardRepository.findByBookname(newBook.getBookname());
 
-        // 카카오 API 호출 및 저장
-        List<BoardDTO> newBooks = bookApiService.fetchBooks("베스트셀러", 100);
-        for (BoardDTO book : newBooks) {
-            boardRepository.save(book);
+            if (existingBook != null) {
+                // (1) 이미 있으면 -> 기존 ID를 유지한 채로 내용만 최신으로 업데이트
+                newBook.setBookid(existingBook.getBookid());
+                boardRepository.goUpdate(newBook);
+                updatedCount++;
+            } else {
+                // (2) 없으면 -> 새로 추가
+                boardRepository.save(newBook);
+                newCount++;
+            }
         }
         
-        System.out.println("[스케줄러 완료] 갱신 완료.");
+        System.out.println("[갱신 완료] 업데이트: " + updatedCount + "권, 신규 추가: " + newCount + "권");
     }
 }
-
