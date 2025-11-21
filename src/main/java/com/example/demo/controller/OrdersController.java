@@ -35,7 +35,7 @@ public class OrdersController {
         String email = "kakao_" + principal.getAttributes().get("id");
         CustomerDTO customer = sql.selectOne("Customer.findByEmail", email);
         
-        // 내 주문 내역 가져오기 (서비스 메서드 이름 변경됨: getOrderList -> getMyOrders)
+        // 내 주문 내역 가져오기
         List<Map<String, Object>> orderList = ordersService.getMyOrders(customer.getCustid());
         
         model.addAttribute("orderList", orderList);

@@ -28,4 +28,5 @@
     <delete id="deleteAll">
         DELETE FROM cart
     </delete>
+    
 </mapper>

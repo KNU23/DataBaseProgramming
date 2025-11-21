@@ -66,7 +66,6 @@ public class BoardRepository {
         sql.delete("Board.deleteAll");
     }
 	
-	// ★ 이 메서드를 추가해주세요!
     /** 도서 ID 번호표를 1번으로 초기화 **/
     public void resetAutoIncrement() {
         sql.update("Board.resetAutoIncrement");

@@ -21,31 +21,35 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-    		/** http 권한요청 **/
+    		/** HTTP 요청 권한 설정 **/
             .authorizeHttpRequests(authorize -> authorize
-                // [수정 1] "/style.css"를 추가하여 비로그인 사용자도 CSS를 볼 수 있게 허용
+                // 정적 리소스 허용 (CSS, JS, 이미지 등)
                 .requestMatchers("/css/**", "/style.css", "/js/**", "/error", "/uploads/**", "/images/**").permitAll()
                 
+                // 공개 페이지 (메인, 목록, 상세, 로그인)
                 .requestMatchers(HttpMethod.GET, "/", "/list", "/bookid/**", "/refresh-books").permitAll()
                 .requestMatchers("/login").permitAll()
                 
+                // 인증된 사용자만 접근 (장바구니, 주문, 검색, 마이페이지)
                 .requestMatchers("/cart/**", "/orderList", "/search", "/addApiBook", "/customers", "/addCustomer").authenticated()                
+                
+                // 관리자 기능 (등록, 수정, 삭제)
                 .requestMatchers("/addBook", "/goUpdate/**", "/goDelete/**").authenticated()
                 
+                // 그 외 모든 요청은 인증 필요
                 .anyRequest().authenticated()	
             )
             
-        	/** 로그인 **/
+        	/** OAuth2 로그인 설정 (카카오) **/
             .oauth2Login(oauth2 -> oauth2
             		.loginPage("/login")
-            		// [수정 2] 로그인 성공 후 이동할 주소를 "/list" -> "/" (홈)으로 변경
             		.defaultSuccessUrl("/", true) 
             		.userInfoEndpoint(userInfo -> userInfo
             				.userService(customOAuth2UserService)            		    
             		)
             )
             
-        	/** 로그아웃 **/
+        	/** 로그아웃 설정 **/
             .logout(logout -> logout
                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                 .logoutSuccessUrl("/")

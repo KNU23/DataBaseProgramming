@@ -36,6 +36,11 @@ public class BoardController {
 	private final CartService cartService; 
     private final SqlSessionTemplate sql; 
 	
+    // ==========================================
+    //              도서 조회 기능
+    // ==========================================
+
+    /** 도서 목록 페이지 (페이징, 검색, 정렬) **/
 	@GetMapping("/list")
 	public String getList(Model model, 
 	                      @RequestParam(value = "keyword", required = false) String keyword,
@@ -54,18 +59,30 @@ public class BoardController {
 		return "bookList";
 	}
 	
-	/** 도서정보 추가하기 **/
+	/** 도서 상세 보기 **/
+	@GetMapping("/bookid/{id}")
+	public String detail(@PathVariable("id") Integer id, Model model) {
+		BoardDTO boardDTO = boardService.detail(id);
+		model.addAttribute("bookDetail", boardDTO);
+		return "detailBook";
+	}
+
+    // ==========================================
+    //            관리자 기능 (등록/수정/삭제)
+    // ==========================================
+	
+	/** 도서 등록 페이지 이동 **/
 	@GetMapping("/addBook")
-	public String addBook(Model model) {
+	public String addBookForm(Model model) {
 		model.addAttribute("boardDTO", new BoardDTO());
 		return "addBook";
 	}
 	
-	/** 도서정보 저장하기 **/
+	/** 도서 등록 처리 **/
 	@PostMapping("/addBook")
-	public String save(@Valid @ModelAttribute BoardDTO boardDTO, 
-	                   BindingResult bindingResult, 
-	                   RedirectAttributes redirectAttributes) {
+	public String saveBook(@Valid @ModelAttribute BoardDTO boardDTO, 
+	                       BindingResult bindingResult, 
+	                       RedirectAttributes redirectAttributes) {
 		
 		if (bindingResult.hasErrors()) {
 			return "addBook"; 
@@ -76,37 +93,20 @@ public class BoardController {
 		return "redirect:/list";
 	}
 	
-	/** 도서정보 상세보기 **/
-	@GetMapping("/bookid/{id}")
-	public String detail(@PathVariable("id") Integer id, Model model) {
-		BoardDTO boardDTO = boardService.detail(id);
-		model.addAttribute("bookDetail", boardDTO);
-		return "detailBook";
-	}
-	
-	/** 도서정보 삭제하기 **/
-	@GetMapping("/goDelete/{id}")
-	public String goDelete(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
-		boardService.goDelete(id);
-		redirectAttributes.addFlashAttribute("msg", "도서(ID: " + id + ") 정보가 삭제되었습니다.");
-		return "redirect:/list";
-	}
-	
-	/** 도서정보 수정화면 호출 **/
+	/** 도서 수정 페이지 이동 **/
 	@GetMapping("/goUpdate/{id}")
-	public String goUpdate(@PathVariable("id") Integer id, Model model) {
+	public String updateBookForm(@PathVariable("id") Integer id, Model model) {
 		BoardDTO boardDTO = boardService.detail(id);
 		model.addAttribute("bookDetail", boardDTO);
 		return "updateBook";
 	}
 	
-	/** 도서정보 수정 및 저장 **/
+	/** 도서 수정 처리 **/
 	@PostMapping("/goUpdate/{id}")
-	public String goUpdate(@PathVariable("id") Integer id,
-	                       @Valid @ModelAttribute("bookDetail") BoardDTO boardDTO, 
-	                       BindingResult bindingResult, 
-	                       RedirectAttributes redirectAttributes,
-	                       Model model) {
+	public String updateBook(@PathVariable("id") Integer id,
+	                         @Valid @ModelAttribute("bookDetail") BoardDTO boardDTO, 
+	                         BindingResult bindingResult, 
+	                         RedirectAttributes redirectAttributes) {
 		
 		boardDTO.setBookid(id);
 
@@ -118,37 +118,46 @@ public class BoardController {
 		redirectAttributes.addFlashAttribute("msg", "도서(ID: " + boardDTO.getBookid() + ") 정보가 수정되었습니다.");
 		return "redirect:/list";
 	}
+
+	/** 도서 삭제 처리 **/
+	@GetMapping("/goDelete/{id}")
+	public String deleteBook(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+		boardService.goDelete(id);
+		redirectAttributes.addFlashAttribute("msg", "도서(ID: " + id + ") 정보가 삭제되었습니다.");
+		return "redirect:/list";
+	}
 	
-	/** 도서 검색 페이지 이동 **/
+    // ==========================================
+    //            API 검색 및 추가 기능
+    // ==========================================
+
+	/** API 도서 검색 페이지 이동 **/
 	@GetMapping("/search")
 	public String searchPage() {
 		return "searchBook";
 	}
 	
-	/** 도서 검색 수행 **/
+	/** API 도서 검색 수행 (알라딘) **/
 	@PostMapping("/search")
-	public String search(@RequestParam("keyword") String keyword, Model model) {
+	public String searchApi(@RequestParam("keyword") String keyword, Model model) {
 		List<BoardDTO> books = bookApiService.searchBooks(keyword);
-	
 		model.addAttribute("books", books);
 		model.addAttribute("keyword", keyword);
-		
 		return "searchBook";
 	}
 	
-	/** API 검색 결과 DB 저장 및 장바구니 추가 **/
+	/** API 검색 결과 DB 저장 및 장바구니 담기 **/
 	@PostMapping("/addApiBook")
 	public String addApiBook(@ModelAttribute BoardDTO boardDTO, 
                              RedirectAttributes redirectAttributes,
                              @AuthenticationPrincipal OAuth2User principal) { 
 		
-		// API로 검색한 책을 우리 DB에 저장
+		// 1. 도서 정보 DB 저장
 		boardService.save(boardDTO);
 		
-        // 방금 저장된 bookid로 장바구니에 추가
+        // 2. 장바구니 자동 담기
         if (principal != null) {
             try {
-                // 현재 로그인한 사용자(custid) 찾기
                 String email = "kakao_" + principal.getAttributes().get("id");
                 CustomerDTO customer = sql.selectOne("Customer.findByEmail", email);
 
@@ -159,7 +168,6 @@ public class BoardController {
                     cartDTO.setCount(1); 
                     
                     cartService.addCart(cartDTO);
-                    
                     return "redirect:/cart";
                 }
             } catch (Exception e) {
@@ -172,7 +180,11 @@ public class BoardController {
 		return "redirect:/list";
 	}
 	
-	/** 도서 목록 100권 리셋 **/
+    // ==========================================
+    //               기타 편의 기능
+    // ==========================================
+
+	/** 도서 목록 리셋 (인기 도서 100권 갱신) **/
     @GetMapping("/refresh-books")
     public String refreshBooks(RedirectAttributes redirectAttributes) {
         try {
@@ -180,9 +192,8 @@ public class BoardController {
             redirectAttributes.addFlashAttribute("msg", "도서 목록이 인기 도서 100권으로 재설정되었습니다.");
         } catch (Exception e) {
             e.printStackTrace();
-            redirectAttributes.addFlashAttribute("error", "도서 목록 갱신 중 오류가 발생했습니다. (주문 내역 등이 원인일 수 있습니다)");
+            redirectAttributes.addFlashAttribute("error", "도서 목록 갱신 중 오류가 발생했습니다.");
         }
         return "redirect:/list";
     }
 }
-

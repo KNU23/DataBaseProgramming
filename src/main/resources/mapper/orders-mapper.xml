@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="Orders">
+
     <insert id="insertOrder" parameterType="orders" useGeneratedKeys="true" keyProperty="orderid">
         INSERT INTO orders (custid, orderdate, total_price, status)
         VALUES (#{custid}, NOW(), #{totalPrice}, 'ORDERED')

@@ -27,7 +27,7 @@ public class BoardService {
 	private static final int PAGE_BLOCK_SIZE = 5; 
 	private final SqlSessionTemplate sql;
 	
-	/** 도서 목록 불러오기 (페이징 + 검색 + 정렬) **/
+	/** 도서목록 불러오기 (페이징 + 검색 + 정렬) **/
 	public BookListResponseDTO getList(String keyword, int page, String sort, String order) {
 		
 		if (page <= 0) {
@@ -41,7 +41,7 @@ public class BoardService {
 		return new BookListResponseDTO(bookList, pagingInfo);
 	}
 
-	/** 도서 정보 추가하기 (중복 방지 로직 적용) **/
+	/** 도서정보 추가하기 **/
 	@Transactional
 	public void save(BoardDTO boardDTO) {
 		MultipartFile file = boardDTO.getCoverImageFile();
@@ -51,14 +51,11 @@ public class BoardService {
 			boardDTO.setCoverImagePath(imagepath);
 		}
 		
-        // 중복 도서 확인 (제목 기준)
         BoardDTO existingBook = boardRepository.findByBookname(boardDTO.getBookname());
 
         if (existingBook != null) {
-            // 이미 존재하면 저장하지 않고 기존 ID 사용
             boardDTO.setBookid(existingBook.getBookid());
         } else {
-            // 없으면 신규 저장
             boardRepository.save(boardDTO);
         }
 	}
@@ -87,18 +84,11 @@ public class BoardService {
 		boardRepository.goUpdate(boardDTO);
 	}
 	
-	/**
-     * 인기 도서 목록 갱신 (데이터 보존 모드)
-     * - 장바구니, 주문내역 삭제하지 않음
-     * - 기존에 있는 책은 정보를 업데이트하고, 없는 책만 추가함
-     */
+	/** 인기 도서 목록 갱신 **/
 	@Scheduled(cron = "0 0/30 * * * *") 
     @Transactional
     public void refreshToPopularBooks() {
         System.out.println("[스케줄러 실행] 알라딘 인기 도서 정보 갱신 (기존 데이터 유지)...");
-
-        // [삭제 코드 제거됨] 
-        // sql.delete("Cart.deleteAll"); ... 등등 삭제
 
         // 1. 알라딘 API 호출 (100권)
         List<BoardDTO> newBooks = bookApiService.fetchBooks("Bestseller", 100);
@@ -108,16 +98,13 @@ public class BoardService {
 
         // 2. 하나씩 확인하며 갱신
         for (BoardDTO newBook : newBooks) {
-            // 이미 등록된 책인지 확인
             BoardDTO existingBook = boardRepository.findByBookname(newBook.getBookname());
 
             if (existingBook != null) {
-                // (1) 이미 있으면 -> 기존 ID를 유지한 채로 내용만 최신으로 업데이트
                 newBook.setBookid(existingBook.getBookid());
                 boardRepository.goUpdate(newBook);
                 updatedCount++;
             } else {
-                // (2) 없으면 -> 새로 추가
                 boardRepository.save(newBook);
                 newCount++;
             }

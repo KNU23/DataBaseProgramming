@@ -17,9 +17,9 @@ public class AladinBookResponse {
         private String publisher;   // 출판사
         private Integer priceSales; // 판매가
         private String description; // 설명
-        private String cover;       // 표지 이미지 URL (기본)
+        private String cover;       // 표지 이미지 URL
         
-        // ★ 추가된 필드: 알라딘 평점 (10점 만점)
+        // 알라딘 평점 (10점 만점)
         private int customerReviewRank; 
     }
 }

@@ -7,7 +7,7 @@ body {
     background-color: #f8f9fa;
     color: #333;
     margin: 0;
-    padding-top: 0; /* 네비게이션 바 공간 확보 필요 시 조정 */
+    padding-top: 0; 
 }
 
 /** 링크 스타일 **/
@@ -18,12 +18,11 @@ a {
 
 /** 메인 히어로 섹션 (배너) **/
 .hero-section {
-    /* 배경 이미지 URL (무료 이미지 사이트 Unsplash 사용) */
     background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
                 url('https://images.unsplash.com/photo-1507842217121-9e9f1479b035?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed; /* 패럴랙스 효과 */
+    background-attachment: fixed; 
     color: white;
     padding: 120px 0;
     text-align: center;
@@ -114,12 +113,12 @@ a {
 .book-card img {
     height: 260px;
     width: 100%;
-    object-fit: cover; /* 이미지가 찌그러지지 않게 */
+    object-fit: cover; 
     transition: transform 0.5s ease;
 }
 
 .book-card:hover img {
-    transform: scale(1.05); /* 마우스 올리면 이미지 살짝 확대 */
+    transform: scale(1.05); 
 }
 
 .card-body {

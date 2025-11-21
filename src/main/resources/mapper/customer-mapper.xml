@@ -41,7 +41,7 @@
     	SELECT custid, name, address, phone, email
       	FROM customer
      	WHERE email = #{email}
-</select>
+	</select>
 
 </mapper>
 

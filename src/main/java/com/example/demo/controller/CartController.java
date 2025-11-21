@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import java.security.Principal; 
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -23,12 +22,11 @@ public class CartController {
     private final OrdersService ordersService;
     private final SqlSessionTemplate sql; 
 
-    // 장바구니 담기
+    /** 장바구니 담기 **/
     @PostMapping("/cart/add")
     public String addCart(@ModelAttribute CartDTO cartDTO, 
                           @AuthenticationPrincipal OAuth2User principal) {
         
-        // 로그인한 사용자의 custid 찾기
         String email = "kakao_" + principal.getAttributes().get("id");
         CustomerDTO customer = sql.selectOne("Customer.findByEmail", email);
         
@@ -38,7 +36,7 @@ public class CartController {
         return "redirect:/cart";
     }
 
-    // 장바구니 목록 페이지
+    /** 장바구니 목록 페이지 **/
     @GetMapping("/cart")
     public String cartList(Model model, @AuthenticationPrincipal OAuth2User principal) {
         if (principal == null) return "redirect:/login";
@@ -50,7 +48,7 @@ public class CartController {
         return "cartList";
     }
 
-    // 장바구니 주문하기
+    /** 장바구니 주문하기 **/
     @PostMapping("/cart/order")
     public String orderCart(@AuthenticationPrincipal OAuth2User principal) {
         try {

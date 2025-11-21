@@ -21,7 +21,7 @@ public class OrdersService {
     private final SqlSessionTemplate sql;
     private final CartService cartService;
 
-    // 장바구니에 있는 모든 상품 주문
+    /** 장바구니 모든 상품 주문 **/
     @Transactional
     public void orderCart(int custid) throws Exception {
         

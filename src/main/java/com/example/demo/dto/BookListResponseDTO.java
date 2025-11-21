@@ -9,6 +9,5 @@ import lombok.RequiredArgsConstructor;
 public class BookListResponseDTO {
 
     private final List<BoardDTO> bookList;
-    private final PagingInfoDTO pagingInfo;
-    
+    private final PagingInfoDTO pagingInfo;  
 }
