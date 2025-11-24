@@ -20,4 +20,6 @@ public class OrdersDTO {
     
     private Integer bookid; 
     private Integer saleprice; 
+    
+    private String impUid; // 포트원 결제 고유 번호
 }

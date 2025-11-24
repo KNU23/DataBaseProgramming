@@ -27,18 +27,15 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         Map<String, Object> attributes = oAuth2User.getAttributes();
         
-        // 카카오 응답 분석
         Map<String, Object> kakaoAccount = (Map<String, Object>) attributes.get("kakao_account");
         Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
         
         String email = "kakao_" + attributes.get("id"); 
         String nickname = (String) profile.get("nickname");
 
-        // DB에 해당 이메일(ID)을 가진 유저가 있는지 확인
         CustomerDTO customer = sql.selectOne("Customer.findByEmail", email);
 
         if (customer == null) {
-            // 없으면 신규 가입 (자동)
             customer = new CustomerDTO();
             customer.setName(nickname);
             customer.setEmail(email);
@@ -47,7 +44,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             sql.insert("Customer.insert", customer); 
         }
         
-        // 여기서는 간단히 ROLE_USER 리턴        
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
                 attributes,

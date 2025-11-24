@@ -3,6 +3,7 @@ package com.example.demo.service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ArrayList;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
@@ -55,7 +56,38 @@ public class OrdersService {
         sql.delete("Cart.clearCart", custid);
     }
     
-    // 내 주문 내역 조회
+    /** 단건 주문 처리 (바로 구매) **/
+    @Transactional
+    public void orderOne(OrdersDTO ordersDTO) throws Exception {
+        
+        // 1. 재고 확인 및 감소
+        int result = sql.update("Board.decreaseStock", ordersDTO.getBookid());
+        if (result == 0) {
+            throw new Exception("재고가 부족합니다.");
+        }
+
+        // 2. 주문(Orders) 생성
+        // 단건 주문이므로 총 가격 = 판매가
+        ordersDTO.setTotalPrice(ordersDTO.getSaleprice());
+        sql.insert("Orders.insertOrder", ordersDTO); 
+
+        // 3. 주문 상세(OrderDetails) 생성
+        Map<String, Object> detailItem = new HashMap<>();
+        detailItem.put("bookid", ordersDTO.getBookid());
+        detailItem.put("count", 1); 
+        detailItem.put("price", ordersDTO.getSaleprice());
+
+        List<Map<String, Object>> detailsList = new ArrayList<>();
+        detailsList.add(detailItem);
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("orderId", ordersDTO.getOrderid());
+        params.put("details", detailsList);
+        
+        sql.insert("Orders.insertOrderDetails", params);
+    }
+    
+    /** 내 주문 내역 조회 **/
     public List<Map<String, Object>> getMyOrders(int custid) {
         return sql.selectList("Orders.getMyOrders", custid);
     }

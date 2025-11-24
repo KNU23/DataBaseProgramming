@@ -1,15 +1,20 @@
 package com.example.demo.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable; // 추가 필요
 
 import com.example.demo.dto.CartDTO;
 import com.example.demo.dto.CustomerDTO;
 import com.example.demo.service.CartService;
 import com.example.demo.service.OrdersService;
+
+import java.util.Map;
+
 import org.mybatis.spring.SqlSessionTemplate;
 
 import lombok.RequiredArgsConstructor;
@@ -50,15 +55,31 @@ public class CartController {
 
     /** 장바구니 주문하기 **/
     @PostMapping("/cart/order")
-    public String orderCart(@AuthenticationPrincipal OAuth2User principal) {
+    @ResponseBody // AJAX 요청에 대한 응답
+    public ResponseEntity<String> orderCart(@AuthenticationPrincipal OAuth2User principal, 
+                                          @RequestBody Map<String, String> paymentData) {
         try {
             String email = "kakao_" + principal.getAttributes().get("id");
             CustomerDTO customer = sql.selectOne("Customer.findByEmail", email);
             
+            String impUid = paymentData.get("imp_uid");
+            
+            // 주문 생성 진행
             ordersService.orderCart(customer.getCustid());
-            return "redirect:/orderList?msg=success";
+            
+            return ResponseEntity.ok("success");
         } catch (Exception e) {
-            return "redirect:/cart?error=" + e.getMessage();
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+    
+    /** 장바구니 항목 삭제 **/
+    // 기존의 BoardController.goDelete 처럼 GET 방식으로 처리
+    @GetMapping("/cart/delete/{cartId}")
+    public String deleteCart(@PathVariable("cartId") int cartId) {
+        
+        cartService.deleteCart(cartId);
+        
+        return "redirect:/cart";
     }
 }
