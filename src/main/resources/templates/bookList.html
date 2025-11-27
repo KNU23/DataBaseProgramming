@@ -90,24 +90,33 @@
                 <tr th:each="bookinfo: ${bookList}">
                     
                     <td>
-                        <img th:if="${bookinfo.coverImagePath != null and bookinfo.coverImagePath != ''}"
-                             th:src="${bookinfo.coverImagePath}" 
-                             alt="표지" 
-                             class="img-thumbnail" 
-                             style="width: 50px; height: 70px; object-fit: cover;">
-                             
-                        <!-- 이미지가 없을 때 기본 아이콘 -->
-                        <div th:if="${bookinfo.coverImagePath == null or bookinfo.coverImagePath == ''}" 
-                             class="text-center text-muted"
-                             style="width: 50px; height: 70px; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
-                            <i class="bi bi-image" style="font-size: 1.5rem;"></i>
-                        </div>
+                    	<a th:href="@{/bookid/{id}(id=${bookinfo.bookid})}">
+	                        <img th:if="${bookinfo.coverImagePath != null and bookinfo.coverImagePath != ''}"
+	                             th:src="${bookinfo.coverImagePath}" 
+	                             alt="표지" 
+	                             class="img-thumbnail" 
+	                             style="width: 50px; height: 70px; object-fit: cover;">
+	                             
+	                        <!-- 이미지가 없을 때 기본 아이콘 -->
+	                        <div th:if="${bookinfo.coverImagePath == null or bookinfo.coverImagePath == ''}" 
+	                             class="text-center text-muted"
+	                             style="width: 50px; height: 70px; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
+	                            <i class="bi bi-image" style="font-size: 1.5rem;"></i>
+	                        </div>
+                        </a>
                     </td>
                     
                     <td>
                         <a th:text="${bookinfo.bookid}" th:href="@{/bookid/{id}(id=${bookinfo.bookid})}"></a>
                     </td>
-                    <td th:text="${bookinfo.bookname}"></td>
+                    
+                    <td>
+				        <a th:href="@{/bookid/{id}(id=${bookinfo.bookid})}" 
+				           th:text="${bookinfo.bookname}" 
+				           class="text-decoration-none text-dark fw-bold">
+				           책 제목
+				        </a>
+				    </td>
                     <td th:text="${bookinfo.publisher}"></td>
                     <td th:text="${bookinfo.author}"></td>
                     <td th:text="${#numbers.formatInteger(bookinfo.price, 0, 'COMMA')} + ' 원'"></td>
