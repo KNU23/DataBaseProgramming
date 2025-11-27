@@ -67,7 +67,6 @@ public class OrdersService {
         }
 
         // 2. 주문(Orders) 생성
-        // 단건 주문이므로 총 가격 = 판매가
         ordersDTO.setTotalPrice(ordersDTO.getSaleprice());
         sql.insert("Orders.insertOrder", ordersDTO); 
 

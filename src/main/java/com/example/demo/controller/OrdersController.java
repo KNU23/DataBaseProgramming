@@ -9,15 +9,15 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable; // 추가
-import org.springframework.web.bind.annotation.PostMapping;  // 추가
+import org.springframework.web.bind.annotation.PathVariable; 
+import org.springframework.web.bind.annotation.PostMapping;  
 import com.example.demo.dto.CartDTO;
 
-import com.example.demo.dto.BoardDTO;      // 추가
-import com.example.demo.dto.CustomerDTO;   // 추가
-import com.example.demo.dto.OrdersDTO;     // 추가
+import com.example.demo.dto.BoardDTO;     
+import com.example.demo.dto.CustomerDTO;   
+import com.example.demo.dto.OrdersDTO;    
 import com.example.demo.service.BoardService; 
-import com.example.demo.service.CartService;	// 추가
+import com.example.demo.service.CartService;	
 
 import com.example.demo.dto.CustomerDTO;
 import com.example.demo.service.OrdersService;
@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class OrdersController {
 
     private final OrdersService ordersService;
-    private final BoardService boardService;       // 추가: 책 정보 조회용
+    private final BoardService boardService;     
     private final CartService cartService;
     private final SqlSessionTemplate sql; 
 
@@ -70,8 +70,7 @@ public class OrdersController {
     /** 개별 상품 주문 처리 (POST) **/
     @PostMapping("/addOrder")
     public String addOrder(OrdersDTO ordersDTO, @AuthenticationPrincipal OAuth2User principal) {
-        try {
-            // [추가] 로그인한 사용자의 custid 자동 설정
+        try {          
             if (principal == null) return "redirect:/login";
             String email = "kakao_" + principal.getAttributes().get("id");
             CustomerDTO customer = sql.selectOne("Customer.findByEmail", email);
@@ -89,7 +88,7 @@ public class OrdersController {
     @PostMapping("/addOrder/cart")
     public String addCartFromOrder(OrdersDTO ordersDTO, @AuthenticationPrincipal OAuth2User principal) {
         
-        // [추가] 로그인한 사용자의 custid 자동 설정
+        // 로그인한 사용자 자동 설정
         if (principal == null) return "redirect:/login";
         String email = "kakao_" + principal.getAttributes().get("id");
         CustomerDTO customer = sql.selectOne("Customer.findByEmail", email);

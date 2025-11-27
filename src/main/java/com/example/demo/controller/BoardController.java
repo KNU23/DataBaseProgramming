@@ -152,10 +152,9 @@ public class BoardController {
                              RedirectAttributes redirectAttributes,
                              @AuthenticationPrincipal OAuth2User principal) { 
 		
-		// 1. 도서 정보 DB 저장
+		// 도서 정보 DB 저장
 		boardService.save(boardDTO);
 		
-        // 2. 장바구니 자동 담기
         if (principal != null) {
             try {
                 String email = "kakao_" + principal.getAttributes().get("id");

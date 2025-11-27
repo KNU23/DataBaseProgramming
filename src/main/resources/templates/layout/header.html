@@ -5,6 +5,9 @@
 <head th:fragment="commonHead(title)">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title th:text="${title}">KNU BookStore</title>
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>">
@@ -52,6 +55,21 @@
                             <i class="bi bi-box-arrow-in-right"></i> 로그인
                         </a>
                     </li>
+                    
+                    <li class="nav-item ms-2" sec:authorize="isAuthenticated()">
+				        
+				        <a th:if="${not #authorization.expression('hasRole(''ADMIN'')')}" 
+				           class="btn btn-secondary text-white" 
+				           href="/toggle-admin">
+				           <i class="bi bi-toggle-off"></i> 관리자 모드 OFF
+				        </a>
+				
+				        <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" 
+				           class="btn btn-danger text-white" 
+				           href="/toggle-admin">
+				           <i class="bi bi-toggle-on"></i> 관리자 모드 ON
+				        </a>
+				    </li>
                     
                     <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
 						<a class="nav-link dropdown-toggle" href="#" id="navbarUserDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">

@@ -24,17 +24,18 @@ public class SecurityConfig {
     		/** HTTP 요청 권한 설정 **/
             .authorizeHttpRequests(authorize -> authorize
                 // 정적 리소스 허용 (CSS, JS, 이미지 등)
-                .requestMatchers("/css/**", "/style.css", "/js/**", "/error", "/uploads/**", "/images/**").permitAll()
-                
+                .requestMatchers("/css/**", "/style.css", "/js/**", "/error", "/uploads/**", "/images/**").permitAll()                
                 // 공개 페이지 (메인, 목록, 상세, 로그인)
                 .requestMatchers(HttpMethod.GET, "/", "/list", "/bookid/**", "/refresh-books").permitAll()
                 .requestMatchers("/login").permitAll()
                 
-                // 인증된 사용자만 접근 (장바구니, 주문, 검색, 마이페이지)
-                .requestMatchers("/cart/**", "/orderList", "/search", "/addApiBook", "/customers", "/addCustomer").authenticated()                
+                // 인증된 사용자만 접근 (장바구니, 주문, 검색)
+                .requestMatchers("/cart/**", "/orderList", "/search", "/addApiBook", "/customers", "/addCustomer").authenticated()               
                 
+                // 관리자 모드 토글 URL 허용 (로그인한 사용자만)
+                .requestMatchers("/toggle-admin").authenticated()                
                 // 관리자 기능 (등록, 수정, 삭제)
-                .requestMatchers("/addBook", "/goUpdate/**", "/goDelete/**").authenticated()
+                .requestMatchers("/addBook", "/goUpdate/**", "/goDelete/**").hasRole("ADMIN")
                 
                 // 그 외 모든 요청은 인증 필요
                 .anyRequest().authenticated()	
@@ -56,7 +57,17 @@ public class SecurityConfig {
                 .invalidateHttpSession(true) 
                 .deleteCookies("JSESSIONID") 
                 .permitAll()
+            )
+            
+            /** 권한 없는 페이지 접근 시 처리 (예외 핸들링) **/
+            .exceptionHandling(handling -> handling
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    // 권한 문제 발생 시 홈('/')으로 이동하며 error 파라미터 전달
+                    response.sendRedirect("/?error=access_denied");
+                })
             );
+        
+        
         
         return http.build();
     }

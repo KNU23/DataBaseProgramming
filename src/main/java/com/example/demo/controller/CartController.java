@@ -55,7 +55,7 @@ public class CartController {
 
     /** 장바구니 주문하기 **/
     @PostMapping("/cart/order")
-    @ResponseBody // AJAX 요청에 대한 응답
+    @ResponseBody
     public ResponseEntity<String> orderCart(@AuthenticationPrincipal OAuth2User principal, 
                                           @RequestBody Map<String, String> paymentData) {
         try {
@@ -64,7 +64,6 @@ public class CartController {
             
             String impUid = paymentData.get("imp_uid");
             
-            // 주문 생성 진행
             ordersService.orderCart(customer.getCustid());
             
             return ResponseEntity.ok("success");
@@ -74,7 +73,6 @@ public class CartController {
     }
     
     /** 장바구니 항목 삭제 **/
-    // 기존의 BoardController.goDelete 처럼 GET 방식으로 처리
     @GetMapping("/cart/delete/{cartId}")
     public String deleteCart(@PathVariable("cartId") int cartId) {
         
