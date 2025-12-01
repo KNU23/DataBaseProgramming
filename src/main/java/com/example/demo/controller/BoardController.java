@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.example.demo.dto.BoardDTO;
 import com.example.demo.dto.BookListResponseDTO;
@@ -24,6 +26,9 @@ import com.example.demo.dto.CustomerDTO;
 import com.example.demo.service.BoardService;
 import com.example.demo.service.BookApiService;
 import com.example.demo.service.CartService;
+import com.example.demo.dto.ReviewDTO;
+import com.example.demo.service.ReviewService;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,6 +40,7 @@ public class BoardController {
 	private final BookApiService bookApiService;
 	private final CartService cartService; 
     private final SqlSessionTemplate sql; 
+    private final ReviewService reviewService;
 	
     // ==========================================
     //              도서 조회 기능
@@ -59,12 +65,51 @@ public class BoardController {
 		return "bookList";
 	}
 	
-	/** 도서 상세 보기 **/
+	/** 도서 상세 정보 **/
 	@GetMapping("/bookid/{id}")
-	public String detail(@PathVariable("id") Integer id, Model model) {
-		BoardDTO boardDTO = boardService.detail(id);
-		model.addAttribute("bookDetail", boardDTO);
-		return "detailBook";
+	public String detail(@PathVariable("id") Integer id, Model model, 
+	                     @AuthenticationPrincipal OAuth2User principal) { // principal 파라미터 추가
+	    
+	    // 도서 상세 정보
+	    BoardDTO boardDTO = boardService.detail(id);
+	    model.addAttribute("bookDetail", boardDTO);
+	    
+	    // 리뷰 목록 가져오기
+	    List<ReviewDTO> reviews = reviewService.getReviewsByBookId(id);
+	    model.addAttribute("reviews", reviews);
+	    
+	 // ================= [수정된 부분 시작] =================
+	    
+	    // 3. 리뷰 작성 권한 확인 (관리자 OR 구매자)
+	    boolean canReview = false;
+	    
+	    // (1) 현재 로그인한 사용자의 인증 정보 가져오기 (권한 확인용)
+	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	    boolean isAdmin = false;
+	    
+	    if (auth != null && auth.isAuthenticated()) {
+	        // "ROLE_ADMIN" 권한을 가지고 있는지 확인 (스트림 API 사용)
+	        isAdmin = auth.getAuthorities().stream()
+	                      .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+	    }
+
+	    // (2) 관리자라면 무조건 true, 아니라면 구매 내역 확인
+	    if (isAdmin) {
+	        canReview = true;
+	    } else if (principal != null) {
+	        // 로그인한 일반 사용자 -> 구매 내역 체크
+	        String email = "kakao_" + principal.getAttributes().get("id");
+	        CustomerDTO customer = sql.selectOne("Customer.findByEmail", email);
+	        if (customer != null) {
+	            canReview = reviewService.canReview(id, customer.getCustid());
+	        }
+	    }
+	    
+	    // ================= [수정된 부분 끝] =================
+	    
+	    model.addAttribute("canReview", canReview);
+
+	    return "detailBook";
 	}
 
     // ==========================================

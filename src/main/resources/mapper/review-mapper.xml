@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Review">
+
+    <insert id="insert" parameterType="com.example.demo.dto.ReviewDTO">
+        INSERT INTO review (bookid, custid, rating, content, regdate)
+        VALUES (#{bookid}, #{custid}, #{rating}, #{content}, NOW())
+    </insert>
+
+    <select id="findByBookId" parameterType="int" resultType="com.example.demo.dto.ReviewDTO">
+        SELECT r.*, c.name AS writerName
+          FROM review r
+          JOIN customer c ON r.custid = c.custid
+         WHERE r.bookid = #{bookid}
+      ORDER BY r.regdate DESC
+    </select>
+
+    <select id="countPurchase" parameterType="map" resultType="int">
+        SELECT COUNT(*)
+          FROM order_details od
+          JOIN orders o ON od.orderid = o.orderid
+         WHERE od.bookid = #{bookid}
+           AND o.custid = #{custid}
+           AND o.status = 'ORDERED'
+    </select>
+    
+    <select id="getAvgRating" parameterType="int" resultType="double">
+        SELECT IFNULL(AVG(rating), 0) FROM review WHERE bookid = #{bookid}
+    </select>
+
+</mapper>

@@ -46,6 +46,12 @@
 			                <i class="bi bi-receipt"></i> 주문 내역
 			            </a>
 			        </li>
+			        
+			        <li class="nav-item ms-2" sec:authorize="hasRole('ADMIN')">
+					    <a class="btn btn-outline-light" href="/admin/dashboard">
+					        <i class="bi bi-speedometer2"></i> 대시보드
+					    </a>
+					</li>
 			    </ul>
                 
                 <ul class="navbar-nav">

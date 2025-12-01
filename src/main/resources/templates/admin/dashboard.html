@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+
+<head th:replace="~{layout/header :: commonHead(title='관리자 대시보드')}"></head>
+
+<body>
+    <nav th:replace="~{layout/header :: commonNav}"></nav>
+
+    <div class="container mt-5 mb-5">
+        <h2 class="mb-4"><i class="bi bi-speedometer2"></i> 관리자 대시보드</h2>
+        
+        <div class="row g-4 mb-5">
+            <div class="col-md-3">
+                <div class="card bg-white text-dark border-secondary shadow-sm h-100">
+                    <div class="card-body">
+                        <h6 class="card-title text-secondary">총 회원수</h6>
+                        <h2 class="fw-bold" th:text="${totalUsers} + ' 명'"></h2>
+                        <i class="bi bi-people position-absolute top-0 end-0 m-3 fs-1 text-secondary opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-white text-dark border-secondary shadow-sm h-100">
+                    <div class="card-body">
+                        <h6 class="card-title text-secondary">총 매출액</h6>
+                        <h2 class="fw-bold" th:text="${#numbers.formatInteger(totalRevenue, 0, 'COMMA')} + ' 원'"></h2>
+                        <i class="bi bi-currency-dollar position-absolute top-0 end-0 m-3 fs-1 text-secondary opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-white text-dark border-secondary shadow-sm h-100">
+                    <div class="card-body">
+                        <h6 class="card-title text-secondary">총 주문건수</h6>
+                        <h2 class="fw-bold" th:text="${totalOrders} + ' 건'"></h2>
+                        <i class="bi bi-receipt position-absolute top-0 end-0 m-3 fs-1 text-secondary opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-white text-dark border-secondary shadow-sm h-100">
+                    <div class="card-body">
+                        <h6 class="card-title text-secondary">보유 도서</h6>
+                        <h2 class="fw-bold" th:text="${totalBooks} + ' 권'"></h2>
+                        <i class="bi bi-book position-absolute top-0 end-0 m-3 fs-1 text-secondary opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-8">
+                <div class="card shadow-sm border-secondary">
+                    <div class="card-header bg-secondary text-white fw-bold">
+                        <i class="bi bi-graph-up"></i> 최근 7일 매출 추이
+                    </div>
+                    <div class="card-body">
+                        <canvas id="salesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card shadow-sm border-secondary">
+                    <div class="card-header bg-secondary text-white fw-bold">
+                        <i class="bi bi-trophy"></i> 베스트셀러 Top 5
+                    </div>
+                    <div class="card-body">
+                        <canvas id="booksChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <th:block th:replace="~{layout/footer :: commonScripts}"></th:block>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script th:inline="javascript">
+        // 일별 매출 데이터 배열
+        const salesLabels = [];
+        const salesValues = [];
+
+        /*[# th:each="item : ${dailySales}"]*/
+            salesLabels.push( /*[[${item.label}]]*/ "2023-01-01" ); 
+            salesValues.push( /*[[${item.value}]]*/ 0 );
+        /*[/]*/
+
+        // 인기 도서 데이터 배열
+        const bookLabels = [];
+        const bookValues = [];
+
+        /*[# th:each="item : ${topBooks}"]*/
+            bookLabels.push( /*[[${item.label}]]*/ "Book Title" );
+            bookValues.push( /*[[${item.value}]]*/ 0 );
+        /*[/]*/
+
+        // 데이터 확인용 로그
+        console.log("매출 데이터:", salesLabels, salesValues);
+        console.log("도서 데이터:", bookLabels, bookValues);
+
+
+        /* =========================================
+           2. 차트 생성 로직 (무채색 적용)
+           ========================================= */
+
+        const drawChart = (ctxId, type, labels, data, labelName) => {
+            const canvas = document.getElementById(ctxId);
+            
+            if (!canvas) {
+                console.error(ctxId + " 캔버스를 찾을 수 없습니다.");
+                return;
+            }
+
+            if (labels.length === 0) {
+                console.warn(labelName + ": 데이터가 없습니다.");
+            }
+
+            // 차트 타입에 따른 색상 설정 (회색조)
+            let backgroundColors;
+            let borderColor;
+
+            if (type === 'line') {
+                // [라인 차트] 검정색 선 + 회색 배경
+                borderColor = '#343a40';  // Dark Gray
+                backgroundColors = 'rgba(0, 0, 0, 0.05)'; 
+            } else {
+                // [도넛 차트] 회색 그라데이션 (진한 회색 -> 연한 회색)
+                borderColor = '#ffffff';
+                backgroundColors = [
+                    '#212529', // Black (1등)
+                    '#495057', 
+                    '#6c757d', 
+                    '#adb5bd', 
+                    '#dee2e6'  // Light Gray (5등)
+                ];
+            }
+
+            new Chart(canvas.getContext('2d'), {
+                type: type,
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: labelName,
+                        data: data,
+                        borderColor: borderColor,
+                        backgroundColor: backgroundColors,
+                        fill: (type === 'line'), // 선 그래프일 때만 채우기
+                        tension: 0.3,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    },
+                    scales: type === 'line' ? { y: { beginAtZero: true } } : {}
+                }
+            });
+        };
+
+        // 3. 차트 실행
+        drawChart('salesChart', 'line', salesLabels, salesValues, '일별 매출 (원)');
+        drawChart('booksChart', 'doughnut', bookLabels, bookValues, '판매량');
+
+    </script>
+</body>
+</html>
