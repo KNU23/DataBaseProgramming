@@ -3,158 +3,93 @@
 <body>
 
     <th:block th:fragment="commonScripts">
+        
+        <footer class="main-footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <h5 class="footer-title"><i class="bi bi-book-half"></i> KNU BookStore</h5>
+                        <p class="text-white-50 small">
+                            당신의 일상을 채우는 특별한 서점.<br>
+                            KNU BookStore에서 인생의 책을 만나보세요.
+                        </p>
+                        <div class="social-icons">
+                            <a href="#"><i class="bi bi-instagram"></i></a>
+                            <a href="#"><i class="bi bi-facebook"></i></a>
+                            <a href="#"><i class="bi bi-twitter-x"></i></a>
+                            <a href="#"><i class="bi bi-youtube"></i></a>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 mb-4">
+                        <h5 class="footer-title">고객센터</h5>
+                        <ul class="list-unstyled text-white-50 small">
+                            <li><i class="bi bi-telephone"></i> 010-2162-4487 </li>
+                            <li><i class="bi bi-envelope"></i> 202302089@smail.kongju.ac.kr</li>
+                            <li><i class="bi bi-geo-alt"></i> 충남 천안시 서북구 천안대로 1223-24 공주대학교천안공과대학</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="col-md-4 mb-4">
+                        <h5 class="footer-title">Quick Links</h5>
+                        <ul class="list-unstyled footer-links">
+                            <li><a href="/list">전체 도서 목록</a></li>
+                            <li><a href="/cart">장바구니</a></li>
+                            <li><a href="/orderList">주문 배송 조회</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <hr class="border-secondary my-4">
+                <div class="text-center text-white-50 small">
+                    &copy; 2025 KNU BookStore. All Rights Reserved. Designed by Kim Yong Gak.
+                </div>
+            </div>
+        </footer>
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
         <div id="chatbot-container" class="chatbot-container">
             <div class="chatbot-header">
-                <i class="bi bi-robot"></i> KNU AI 상담사
-                <div class="float-end">
-                    <button id="reset-chat" class="btn btn-sm text-white" title="대화 초기화"><i class="bi bi-arrow-clockwise"></i></button>
-                    <button id="close-chat" class="btn-close btn-close-white btn-sm"></button>
+                <div><i class="bi bi-robot"></i> KNU AI 상담사</div>
+                <div class="chatbot-controls">
+                    <button id="reset-chat" class="btn-icon" title="초기화"><i class="bi bi-arrow-clockwise"></i></button>
+                    <button id="close-chat" class="btn-icon"><i class="bi bi-x-lg"></i></button>
                 </div>
             </div>
-            <div id="chatbot-messages" class="chatbot-messages">
-                </div>
+            <div id="chatbot-messages" class="chatbot-messages"></div>
             <div class="chatbot-input">
-                <input type="text" id="chat-input" placeholder="질문을 입력하세요..." onkeypress="handleEnter(event)">
-                <button onclick="sendMessage()" class="btn btn-primary btn-sm">
-                    <i class="bi bi-send"></i>
-                </button>
+                <input type="text" id="chat-input" placeholder="무엇이든 물어보세요..." onkeypress="handleEnter(event)">
+                <button onclick="sendMessage()" class="btn-send"><i class="bi bi-send-fill"></i></button>
             </div>
         </div>
 
         <button id="chatbot-toggle-btn" class="chatbot-toggle-btn">
             <i class="bi bi-chat-dots-fill"></i>
+            <span class="pulse-ring"></span>
         </button>
 
-        <style>
-            .chatbot-toggle-btn {
-                position: fixed;
-                bottom: 30px;
-                right: 30px;
-                width: 60px;
-                height: 60px;
-                border-radius: 50%;
-                background-color: #2c3e50;
-                color: white;
-                border: none;
-                font-size: 24px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-                cursor: pointer;
-                z-index: 9999;
-                transition: transform 0.3s;
-            }
-            .chatbot-toggle-btn:hover { transform: scale(1.1); }
-
-            .chatbot-container {
-                display: none;
-                position: fixed;
-                bottom: 100px;
-                right: 30px;
-                width: 350px;
-                height: 500px;
-                background-color: white;
-                border-radius: 15px;
-                box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-                z-index: 9999;
-                flex-direction: column;
-                overflow: hidden;
-                border: 1px solid #ddd;
-            }
-
-            .chatbot-header {
-                background-color: #2c3e50;
-                color: white;
-                padding: 15px;
-                font-weight: bold;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-
-            .chatbot-messages {
-                flex: 1;
-                padding: 15px;
-                overflow-y: auto;
-                background-color: #f8f9fa;
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .message {
-                max-width: 80%;
-                padding: 10px 15px;
-                border-radius: 15px;
-                font-size: 0.9rem;
-                word-wrap: break-word;
-            }
-
-            .bot-message {
-                background-color: #e9ecef;
-                align-self: flex-start;
-                border-bottom-left-radius: 2px;
-            }
-
-            .user-message {
-                background-color: #2c3e50;
-                color: white;
-                align-self: flex-end;
-                border-bottom-right-radius: 2px;
-            }
-
-            .chatbot-input {
-                padding: 10px;
-                border-top: 1px solid #ddd;
-                display: flex;
-                gap: 5px;
-                background: white;
-            }
-            
-            .chatbot-input input {
-                flex: 1;
-                border: 1px solid #ddd;
-                border-radius: 20px;
-                padding: 5px 15px;
-                outline: none;
-            }
-        </style>
-
         <script>
+            // (이전과 동일한 챗봇 스크립트 로직)
             const chatContainer = document.getElementById('chatbot-container');
             const toggleBtn = document.getElementById('chatbot-toggle-btn');
             const closeBtn = document.getElementById('close-chat');
-            const resetBtn = document.getElementById('reset-chat'); // 초기화 버튼
+            const resetBtn = document.getElementById('reset-chat');
             const messagesArea = document.getElementById('chatbot-messages');
             const inputField = document.getElementById('chat-input');
-
-            // 저장소 키
             const STORAGE_KEY_MSG = 'knu_chat_messages';
             const STORAGE_KEY_STATE = 'knu_chat_is_open';
 
-            // 페이지 로드 시 초기화
-            window.addEventListener('DOMContentLoaded', () => {
-                loadChatState();
-                loadMessages();
-            });
+            window.addEventListener('DOMContentLoaded', () => { loadChatState(); loadMessages(); });
 
-            // 1. 채팅창 열기/닫기 상태 관리
-            if(toggleBtn) {
-                toggleBtn.addEventListener('click', () => {
-                    setChatState(true);
-                });
-            }
-            if(closeBtn) {
-                closeBtn.addEventListener('click', () => {
-                    setChatState(false);
-                });
-            }
+            if(toggleBtn) toggleBtn.addEventListener('click', () => setChatState(true));
+            if(closeBtn) closeBtn.addEventListener('click', () => setChatState(false));
 
             function setChatState(isOpen) {
                 if (isOpen) {
                     chatContainer.style.display = 'flex';
                     toggleBtn.style.display = 'none';
                     sessionStorage.setItem(STORAGE_KEY_STATE, 'true');
+                    setTimeout(() => inputField.focus(), 100); 
                     scrollToBottom();
                 } else {
                     chatContainer.style.display = 'none';
@@ -162,121 +97,74 @@
                     sessionStorage.setItem(STORAGE_KEY_STATE, 'false');
                 }
             }
-
             function loadChatState() {
                 const isOpen = sessionStorage.getItem(STORAGE_KEY_STATE) === 'true';
                 setChatState(isOpen);
             }
-
-            // 2. 메시지 저장 및 불러오기 관리
             function loadMessages() {
                 const savedData = sessionStorage.getItem(STORAGE_KEY_MSG);
                 if (savedData) {
-                    const messages = JSON.parse(savedData);
-                    messages.forEach(msg => {
-                        renderMessageHTML(msg.text, msg.type);
-                    });
+                    JSON.parse(savedData).forEach(msg => renderMessageHTML(msg.text, msg.type));
                 } else {
-                    // 저장된 메시지가 없으면 환영 메시지 표시
-                    const welcomeMsg = "안녕하세요! 무엇을 도와드릴까요? 도서 추천이나 배송 문의를 해보세요.";
+                    const welcomeMsg = "안녕하세요! 👋\n도서 추천, 배송 문의 등 무엇이든 도와드릴게요.";
                     renderMessageHTML(welcomeMsg, 'bot-message');
-                    saveMessageToStorage(welcomeMsg, 'bot-message');
                 }
                 scrollToBottom();
             }
-
             function saveMessageToStorage(text, type) {
-                let messages = [];
-                const savedData = sessionStorage.getItem(STORAGE_KEY_MSG);
-                if (savedData) {
-                    messages = JSON.parse(savedData);
-                }
+                let messages = JSON.parse(sessionStorage.getItem(STORAGE_KEY_MSG) || "[]");
                 messages.push({ text: text, type: type });
                 sessionStorage.setItem(STORAGE_KEY_MSG, JSON.stringify(messages));
             }
-
-            // 대화 내용 초기화
             if(resetBtn) {
                 resetBtn.addEventListener('click', () => {
-                    if(confirm("대화 내용을 모두 지우시겠습니까?")) {
+                    if(confirm("대화 내용을 지우시겠습니까?")) {
                         sessionStorage.removeItem(STORAGE_KEY_MSG);
                         messagesArea.innerHTML = '';
-                        loadMessages(); // 환영 메시지 다시 로드
+                        loadMessages();
                     }
                 });
             }
-
-            // 3. 메시지 전송 로직
-            function handleEnter(e) {
-                if (e.key === 'Enter') sendMessage();
-            }
-
+            function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
             function sendMessage() {
                 const text = inputField.value.trim();
                 if (!text) return;
-
-                // 사용자 메시지 표시 및 저장
                 renderMessageHTML(text, 'user-message');
                 saveMessageToStorage(text, 'user-message');
                 inputField.value = '';
-
-                // 로딩 메시지 표시 (저장 안 함)
-                const loadingId = renderMessageHTML('AI가 답변을 생각중입니다...', 'bot-message');
-
-                // 서버 통신
+                
+                const loadingId = renderMessageHTML('답변을 작성하고 있어요...', 'bot-message loading-msg');
                 const csrfMeta = document.querySelector("meta[name='_csrf']");
                 const headerMeta = document.querySelector("meta[name='_csrf_header']");
                 
-                if (!csrfMeta || !headerMeta) {
-                    document.getElementById(loadingId).innerText = "로그인이 필요하거나 보안 토큰을 찾을 수 없습니다.";
-                    return;
-                }
-
-                const csrfToken = csrfMeta.getAttribute("content");
-                const csrfHeader = headerMeta.getAttribute("content");
+                if (!csrfMeta) { document.getElementById(loadingId).innerText = "로그인이 필요합니다."; return; }
 
                 fetch('/api/chat', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        [csrfHeader]: csrfToken
-                    },
+                    headers: { 'Content-Type': 'application/json', [headerMeta.content]: csrfMeta.content },
                     body: JSON.stringify({ message: text })
                 })
-                .then(response => response.text())
+                .then(r => r.text())
                 .then(data => {
-                    // 로딩 메시지 제거
-                    const loadingMsg = document.getElementById(loadingId);
-                    if(loadingMsg) loadingMsg.remove();
-                    
-                    // AI 답변 표시 및 저장
+                    document.getElementById(loadingId).remove();
                     renderMessageHTML(data, 'bot-message');
                     saveMessageToStorage(data, 'bot-message');
                 })
-                .catch(err => {
-                    console.error(err);
-                    const loadingMsg = document.getElementById(loadingId);
-                    if(loadingMsg) loadingMsg.innerText = "오류가 발생했습니다.";
+                .catch(() => {
+                    document.getElementById(loadingId).innerText = "오류가 발생했습니다.";
                 });
             }
-
-            // 화면에 메시지 그리기 (저장 로직 없음, 순수 렌더링용)
             function renderMessageHTML(text, className) {
                 const div = document.createElement('div');
-                const id = 'msg-' + Date.now() + Math.random(); // 유니크 ID
-                div.id = id;
+                div.id = 'msg-' + Date.now() + Math.random();
                 div.className = `message ${className}`;
                 div.innerText = text;
                 messagesArea.appendChild(div);
                 scrollToBottom();
-                return id;
+                return div.id;
             }
-
-            function scrollToBottom() {
-                messagesArea.scrollTop = messagesArea.scrollHeight;
-            }
+            function scrollToBottom() { messagesArea.scrollTop = messagesArea.scrollHeight; }
         </script>
     </th:block>
-
 </body>
 </html>

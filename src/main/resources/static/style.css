@@ -1,184 +1,376 @@
 @charset "UTF-8";
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
-
-/** 전역 스타일 **/
-body {
-    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background-color: #f8f9fa;
-    color: #333;
-    margin: 0;
-    padding-top: 0; 
-}
-
-/** 링크 스타일 **/
-a {
-    text-decoration: none;
-    color: inherit;
-}
+/* 1. 폰트 가져오기: 제목용(명조), 본문용(고딕) */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
 
 /* =========================================================================
-   [CHANGE 1: Global Color & Buttons] - Deep Teal Primary Color
+   1. Global Variables & Reset
+   ========================================================================= */
+:root {
+    /* [테마 컬러: 클래식 우드 & 페이퍼] */
+    --primary-color: #5D4037;       /* Deep Wood (책장색) */
+    --primary-dark: #3E2723;        /* Darker Wood (진한 갈색) */
+    --accent-color: #C0392B;        /* Classic Red (책갈피/인장 색) */
+    
+    --background-bg: #FDFBF7;       /* Cream Paper (미색 종이 질감) */
+    --card-bg: #FFFFFF;             
+    
+    --text-main: #4E342E;           /* Dark Brown Text (검정 대신 진한 갈색) */
+    --text-muted: #8D6E63;          /* Soft Brown Text */
+    --footer-bg: #3E2723;           
+    
+    --font-heading: 'Noto Serif KR', serif; /* 명조체 */
+    --font-body: 'Noto Sans KR', sans-serif; /* 고딕체 */
+
+    --shadow-book: 0 4px 10px rgba(62, 39, 35, 0.1);
+    --shadow-hover: 0 15px 30px rgba(62, 39, 35, 0.2);
+    --radius-md: 6px;
+    --radius-lg: 10px;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--background-bg);
+    color: var(--text-main);
+    margin: 0;
+    line-height: 1.7;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6, .navbar-brand, .hero-title, .footer-title, .book-title {
+    font-family: var(--font-heading);
+    letter-spacing: -0.02em;
+}
+
+/* 페이지 등장 애니메이션 */
+body > nav, body > div.container, body > .hero-section {
+    animation: fadeIn 0.8s ease-out forwards;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+a { text-decoration: none; color: inherit; transition: all 0.2s; }
+
+/* =========================================================================
+   2. Navbar & Footer
+   ========================================================================= */
+/* 상단바: 짙은 우드톤 */
+.navbar {
+    background-color: var(--primary-color) !important;
+    box-shadow: 0 2px 10px rgba(62, 39, 35, 0.2);
+    padding: 1rem 1rem;
+    border-bottom: 1px solid #3E2723;
+    /* [수정] 네비게이션 바가 항상 다른 요소보다 위에 오도록 설정 */
+    position: relative; 
+    z-index: 1000; 
+}
+
+.navbar-brand { 
+    font-weight: 700; 
+    font-size: 1.5rem; 
+    color: #FDFBF7 !important; 
+}
+.nav-link {
+    color: rgba(253, 251, 247, 0.8) !important;
+    font-weight: 500;
+}
+.nav-link:hover {
+    color: #ffffff !important;
+}
+
+/* 드롭다운 메뉴 스타일 보정 (가려짐 방지 및 스타일 통일) */
+.dropdown-menu {
+    border-radius: 4px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    border: 1px solid #EFEBE9;
+    z-index: 1050; /* 드롭다운을 확실하게 앞으로 당김 */
+}
+.dropdown-item {
+    font-family: var(--font-body);
+    color: var(--text-main);
+    padding: 10px 20px;
+}
+.dropdown-item:hover {
+    background-color: #F5F5F5;
+    color: var(--accent-color);
+}
+
+
+/* 푸터 */
+.main-footer {
+    background-color: var(--footer-bg);
+    color: #D7CCC8; 
+    padding: 70px 0 30px;
+    margin-top: auto;
+    border-top: 4px solid var(--accent-color);
+}
+.footer-title {
+    color: #FDFBF7;
+    font-weight: 700;
+    margin-bottom: 25px;
+    position: relative;
+    padding-bottom: 15px;
+}
+.footer-title::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: 0;
+    width: 40px; height: 2px;
+    background-color: var(--accent-color);
+}
+.footer-links a { display: block; margin-bottom: 10px; color: #D7CCC8; }
+.footer-links a:hover { color: #FFF; text-decoration: underline; }
+
+/* =========================================================================
+   3. Components (Buttons, Cards)
    ========================================================================= */
 .btn-primary {
-    background-color: #1a535c; /* Primary Color Change (Deep Teal/Navy) */
-    border: none;
-    padding: 10px 20px;
-    font-weight: 500;
-    border-radius: 8px;
+    background-color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+    padding: 10px 24px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-body);
 }
-
 .btn-primary:hover {
-    background-color: #154249; /* Darker hover state */
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+    box-shadow: 0 4px 12px rgba(62, 39, 35, 0.3);
 }
 
+/* Book Card */
+.book-card {
+    background: var(--card-bg);
+    border: 1px solid #EFEBE9;
+    border-radius: 4px; 
+    overflow: hidden;
+    box-shadow: var(--shadow-book);
+    transition: all 0.3s ease;
+    height: 100%;
+    position: relative;
+}
+.book-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    background-color: var(--accent-color);
+    opacity: 0;
+    transition: 0.3s;
+}
+.book-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--accent-color);
+}
+.book-card:hover::before { opacity: 1; }
+
+.book-card img {
+    height: 280px;
+    width: 100%;
+    object-fit: contain;
+    padding: 25px;
+    background-color: #FAFAFA;
+    transition: transform 0.4s ease;
+    filter: saturate(0.9);
+}
+.book-card:hover img { 
+    transform: scale(1.03); 
+    filter: saturate(1.1);
+}
+
+.card-body { 
+    padding: 1.5rem; 
+    display: flex; 
+    flex-direction: column; 
+    background-color: #FFF;
+}
+.book-title { 
+    font-weight: 700; 
+    font-size: 1.15rem; 
+    margin-bottom: 8px; 
+    color: var(--primary-dark);
+    line-height: 1.4;
+    height: 3.2em; 
+    overflow: hidden;
+}
+.book-author { 
+    font-size: 0.9rem; 
+    color: var(--text-muted); 
+    font-style: italic; 
+    margin-bottom: 1rem;
+}
+.book-price { 
+    font-size: 1.2rem; 
+    font-weight: 700; 
+    color: var(--accent-color); 
+    font-family: var(--font-body);
+}
 
 /* =========================================================================
-   [CHANGE 2: Hero Section (Banner)] - Spacious and Refined
+   4. Hero Section
    ========================================================================= */
 .hero-section {
-    background: linear-gradient(rgba(26, 83, 92, 0.7), rgba(26, 83, 92, 0.7)), /* Overlay with new primary color */
+    background: linear-gradient(rgba(62, 39, 35, 0.85), rgba(62, 39, 35, 0.7)), 
                 url('https://images.unsplash.com/photo-1507842217121-9e9f1479b035?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed; 
-    color: white;
-    padding: 150px 0; /* Increase padding for spaciousness */
+    background-attachment: fixed;
+    color: #FDFBF7;
+    padding: 160px 0;
     text-align: center;
-    margin-bottom: 60px; /* Increase margin */
+    margin-bottom: 60px;
+    box-shadow: inset 0 -10px 30px rgba(0,0,0,0.3);
 }
-
-.hero-title {
-    font-size: 4rem; /* Slightly larger title */
-    font-weight: 700;
+.hero-title { 
+    font-size: 3.5rem; 
+    font-weight: 700; 
     margin-bottom: 1.5rem;
-    text-shadow: 0 4px 10px rgba(0,0,0,0.4); /* Smoother shadow */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    display: inline-block;
+    padding-bottom: 20px;
 }
-
 .hero-subtitle {
-    font-size: 1.4rem; /* Larger subtitle */
-    margin-bottom: 4rem;
-    opacity: 0.95;
-    font-weight: 300;
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    opacity: 0.9;
+    font-weight: 400;
 }
 
 .search-container {
-    background: rgba(255, 255, 255, 0.2); 
-    padding: 25px; /* More padding */
-    border-radius: 12px;
-    backdrop-filter: blur(8px);
-    max-width: 800px; /* Wider search bar */
-    margin: 0 auto;
-    box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.15); /* Smoother, lighter shadow */
+    background: rgba(253, 251, 247, 0.95);
+    padding: 25px;
+    border-radius: 4px;
+    max-width: 700px;
+    margin: 40px auto 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 1px solid #D7CCC8;
+}
+.search-container input { 
+    background: transparent; 
+    border: none; 
+    border-bottom: 2px solid var(--primary-color);
+    border-radius: 0;
+    font-family: var(--font-heading);
+    color: var(--primary-dark);
+}
+.search-container input:focus { box-shadow: none; border-color: var(--accent-color); }
+.search-container .btn {
+    border-radius: 4px;
+    background-color: var(--primary-color);
 }
 
-/* =========================================================================
-   [CHANGE 3: Feature Boxes] - Subtle Shadow and Primary Highlight
-   ========================================================================= */
-
+/* Feature Box */
 .feature-box {
-    background: white;
-    padding: 40px 25px; /* More vertical padding */
-    border-radius: 12px; /* Consistent corner radius */
+    background: #FFF;
+    padding: 40px 30px;
+    border-radius: 4px;
     text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* Lighter default shadow */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    height: 100%;
-    border: 1px solid #f0f0f0; /* Lighter border */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    border: 1px solid #EFEBE9;
+    transition: 0.3s;
 }
-
-.feature-box:hover {
-    transform: translateY(-5px); /* Less dramatic lift */
-    box-shadow: 0 12px 25px rgba(0,0,0,0.1); /* Smoother hover shadow */
-    border-color: #1a535c; /* Highlight with new primary color */
+.feature-box:hover { 
+    transform: translateY(-5px); 
+    border-color: var(--primary-color); 
+    background-color: #FFFEFC;
 }
-
-.feature-icon {
-    font-size: 3.5rem; /* Slightly larger icon */
-    color: #1a535c; /* Icon color change */
-    margin-bottom: 20px;
+.feature-icon { 
+    font-size: 2.5rem; 
+    color: var(--primary-color); 
+    margin-bottom: 20px; 
 }
-
-/* =========================================================================
-   [CHANGE 4: Section Title] - Clean Underline
-   ========================================================================= */
-
-.section-title {
-    font-weight: 700;
-    color: #2c3e50;
-    position: relative;
-    display: inline-block;
-    margin-bottom: 25px;
-    font-size: 1.8rem; /* Slightly larger heading */
-}
-
-.section-title::after {
-    content: '';
-    display: block;
-    width: 30%; /* Shorter underline */
-    height: 4px; /* Thicker underline */
-    background: #1a535c; /* Underline color change */
-    margin-top: 8px;
-    border-radius: 2px;
+.feature-box h4 {
+    font-family: var(--font-heading);
+    color: var(--primary-dark);
 }
 
 /* =========================================================================
-   [CHANGE 5: Book Cards] - Cleaner Look & Image Contain Fix
+   5. Chatbot UI Styling
    ========================================================================= */
+.chatbot-toggle-btn {
+    position: fixed; bottom: 30px; right: 30px;
+    width: 65px; height: 65px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: #FDFBF7;
+    border: 2px solid #FDFBF7;
+    font-size: 28px;
+    box-shadow: 0 5px 20px rgba(62, 39, 35, 0.5);
+    cursor: pointer; z-index: 9999;
+    transition: transform 0.3s;
+    display: flex; align-items: center; justify-content: center;
+}
+.chatbot-toggle-btn:hover { transform: scale(1.1); background: var(--accent-color); }
 
-.book-card {
-    background: white;
-    border: none;
-    border-radius: 12px; /* Consistent corner radius */
+.chatbot-container {
+    display: none; flex-direction: column;
+    position: fixed; bottom: 110px; right: 30px;
+    width: 360px; height: 550px;
+    background: #FDFBF7;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    z-index: 9999;
     overflow: hidden;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.05); /* Very subtle default shadow */
-    transition: all 0.3s ease;
+    border: 1px solid var(--primary-color);
+    animation: slideIn 0.3s ease-out;
+}
+@keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+.chatbot-header {
+    background: var(--primary-color);
+    color: #FDFBF7; padding: 15px 20px;
+    font-family: var(--font-heading);
+    font-weight: 700; font-size: 1.1rem;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 2px solid var(--accent-color);
+}
+.chatbot-controls .btn-icon {
+    background: none; border: none; color: #FDFBF7; opacity: 0.8; font-size: 1.1rem; margin-left: 5px; cursor: pointer;
+}
+.chatbot-controls .btn-icon:hover { opacity: 1; }
+
+.chatbot-messages {
+    flex: 1; padding: 20px;
+    overflow-y: auto;
+    background: #FFF;
+    display: flex; flex-direction: column; gap: 12px;
 }
 
-.book-card:hover {
-    transform: translateY(-3px); /* Subtle lift */
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1); /* Lighter hover shadow */
+.message {
+    max-width: 85%; padding: 10px 15px;
+    border-radius: 12px; font-size: 0.95rem; line-height: 1.6;
+    position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    font-family: var(--font-body);
+}
+.bot-message {
+    background: #F5F5F5; color: #3E2723;
+    align-self: flex-start;
+    border: 1px solid #E0E0E0;
+    border-bottom-left-radius: 2px;
+}
+.user-message {
+    background: var(--primary-color); color: #FDFBF7;
+    align-self: flex-end;
+    border-bottom-right-radius: 2px;
 }
 
-.book-card img {
-    height: 260px;
-    width: 100%;
-    object-fit: contain; /* <-- FIX: Prevents image cropping and uses padding */
-    transition: transform 0.3s ease;
-    padding: 10px; /* Padding for the contained image */
-    background-color: #fcfcfc; /* Clean background for contained images */
+.chatbot-input {
+    padding: 15px; background: #FDFBF7; border-top: 1px solid #D7CCC8;
+    display: flex; gap: 10px;
 }
-
-.book-card:hover img {
-    transform: scale(1.0); /* Remove image zoom on hover for contained images */
+.chatbot-input input {
+    flex: 1; border: 1px solid #D7CCC8; border-radius: 4px;
+    padding: 10px 15px; outline: none; background: #FFF;
 }
-
-.card-body {
-    padding: 1.5rem;
+.chatbot-input input:focus { border-color: var(--primary-color); }
+.btn-send {
+    width: 45px; height: 45px; border-radius: 4px;
+    background: var(--primary-color); color: #FFF;
+    border: none; cursor: pointer; transition: 0.2s;
+    display: flex; align-items: center; justify-content: center;
 }
-
-.book-title {
-    font-size: 1.05rem; /* Slightly smaller title */
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 0.3rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.book-author {
-    font-size: 0.85rem; /* Smaller, more subtle author text */
-    color: #999;
-    margin-bottom: 1rem;
-}
-
-.book-price {
-    font-size: 1.3rem; 
-    font-weight: 700;
-    color: #dc3545; /* Price color retained for emphasis */
-}
-
-/* 바로가기 버튼들 */
-.quick-menu-row {
-    margin-bottom: 50px;
-}
+.btn-send:hover { background: var(--accent-color); }
