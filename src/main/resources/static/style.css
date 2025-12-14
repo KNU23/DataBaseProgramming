@@ -16,140 +16,11 @@ a {
     color: inherit;
 }
 
-/** 메인 히어로 섹션 (배너) **/
-.hero-section {
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
-                url('https://images.unsplash.com/photo-1507842217121-9e9f1479b035?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed; 
-    color: white;
-    padding: 120px 0;
-    text-align: center;
-    margin-bottom: 50px;
-}
-
-.hero-title {
-    font-size: 3.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
-}
-
-.hero-subtitle {
-    font-size: 1.25rem;
-    margin-bottom: 3rem;
-    opacity: 0.9;
-    font-weight: 300;
-}
-
-.search-container {
-    background: rgba(255, 255, 255, 0.15);
-    padding: 20px;
-    border-radius: 15px;
-    backdrop-filter: blur(10px);
-    max-width: 700px;
-    margin: 0 auto;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-}
-
-/** 서비스 특징 섹션 (아이콘 박스) **/
-.feature-box {
-    background: white;
-    padding: 30px 20px;
-    border-radius: 15px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    height: 100%;
-    border: 1px solid #eee;
-}
-
-.feature-box:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-    border-color: #007bff;
-}
-
-.feature-icon {
-    font-size: 3rem;
-    color: #007bff;
-    margin-bottom: 15px;
-}
-
-/** 도서 카드 스타일 **/
-.section-title {
-    font-weight: 700;
-    color: #2c3e50;
-    position: relative;
-    display: inline-block;
-    margin-bottom: 30px;
-}
-
-.section-title::after {
-    content: '';
-    display: block;
-    width: 50%;
-    height: 3px;
-    background: #007bff;
-    margin-top: 10px;
-    border-radius: 2px;
-}
-
-.book-card {
-    background: white;
-    border: none;
-    border-radius: 15px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-    transition: all 0.3s ease;
-}
-
-.book-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-}
-
-.book-card img {
-    height: 260px;
-    width: 100%;
-    object-fit: cover; 
-    transition: transform 0.5s ease;
-}
-
-.book-card:hover img {
-    transform: scale(1.05); 
-}
-
-.card-body {
-    padding: 1.5rem;
-}
-
-.book-title {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #333;
-    margin-bottom: 0.5rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.book-author {
-    font-size: 0.9rem;
-    color: #666;
-    margin-bottom: 1rem;
-}
-
-.book-price {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #dc3545;
-}
-
-/** 버튼 스타일 **/
+/* =========================================================================
+   [CHANGE 1: Global Color & Buttons] - Deep Teal Primary Color
+   ========================================================================= */
 .btn-primary {
-    background-color: #007bff;
+    background-color: #1a535c; /* Primary Color Change (Deep Teal/Navy) */
     border: none;
     padding: 10px 20px;
     font-weight: 500;
@@ -157,10 +28,157 @@ a {
 }
 
 .btn-primary:hover {
-    background-color: #0056b3;
+    background-color: #154249; /* Darker hover state */
+}
+
+
+/* =========================================================================
+   [CHANGE 2: Hero Section (Banner)] - Spacious and Refined
+   ========================================================================= */
+.hero-section {
+    background: linear-gradient(rgba(26, 83, 92, 0.7), rgba(26, 83, 92, 0.7)), /* Overlay with new primary color */
+                url('https://images.unsplash.com/photo-1507842217121-9e9f1479b035?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; 
+    color: white;
+    padding: 150px 0; /* Increase padding for spaciousness */
+    text-align: center;
+    margin-bottom: 60px; /* Increase margin */
+}
+
+.hero-title {
+    font-size: 4rem; /* Slightly larger title */
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.4); /* Smoother shadow */
+}
+
+.hero-subtitle {
+    font-size: 1.4rem; /* Larger subtitle */
+    margin-bottom: 4rem;
+    opacity: 0.95;
+    font-weight: 300;
+}
+
+.search-container {
+    background: rgba(255, 255, 255, 0.2); 
+    padding: 25px; /* More padding */
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+    max-width: 800px; /* Wider search bar */
+    margin: 0 auto;
+    box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.15); /* Smoother, lighter shadow */
+}
+
+/* =========================================================================
+   [CHANGE 3: Feature Boxes] - Subtle Shadow and Primary Highlight
+   ========================================================================= */
+
+.feature-box {
+    background: white;
+    padding: 40px 25px; /* More vertical padding */
+    border-radius: 12px; /* Consistent corner radius */
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); /* Lighter default shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+    border: 1px solid #f0f0f0; /* Lighter border */
+}
+
+.feature-box:hover {
+    transform: translateY(-5px); /* Less dramatic lift */
+    box-shadow: 0 12px 25px rgba(0,0,0,0.1); /* Smoother hover shadow */
+    border-color: #1a535c; /* Highlight with new primary color */
+}
+
+.feature-icon {
+    font-size: 3.5rem; /* Slightly larger icon */
+    color: #1a535c; /* Icon color change */
+    margin-bottom: 20px;
+}
+
+/* =========================================================================
+   [CHANGE 4: Section Title] - Clean Underline
+   ========================================================================= */
+
+.section-title {
+    font-weight: 700;
+    color: #2c3e50;
+    position: relative;
+    display: inline-block;
+    margin-bottom: 25px;
+    font-size: 1.8rem; /* Slightly larger heading */
+}
+
+.section-title::after {
+    content: '';
+    display: block;
+    width: 30%; /* Shorter underline */
+    height: 4px; /* Thicker underline */
+    background: #1a535c; /* Underline color change */
+    margin-top: 8px;
+    border-radius: 2px;
+}
+
+/* =========================================================================
+   [CHANGE 5: Book Cards] - Cleaner Look & Image Contain Fix
+   ========================================================================= */
+
+.book-card {
+    background: white;
+    border: none;
+    border-radius: 12px; /* Consistent corner radius */
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05); /* Very subtle default shadow */
+    transition: all 0.3s ease;
+}
+
+.book-card:hover {
+    transform: translateY(-3px); /* Subtle lift */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1); /* Lighter hover shadow */
+}
+
+.book-card img {
+    height: 260px;
+    width: 100%;
+    object-fit: contain; /* <-- FIX: Prevents image cropping and uses padding */
+    transition: transform 0.3s ease;
+    padding: 10px; /* Padding for the contained image */
+    background-color: #fcfcfc; /* Clean background for contained images */
+}
+
+.book-card:hover img {
+    transform: scale(1.0); /* Remove image zoom on hover for contained images */
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.book-title {
+    font-size: 1.05rem; /* Slightly smaller title */
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.3rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.book-author {
+    font-size: 0.85rem; /* Smaller, more subtle author text */
+    color: #999;
+    margin-bottom: 1rem;
+}
+
+.book-price {
+    font-size: 1.3rem; 
+    font-weight: 700;
+    color: #dc3545; /* Price color retained for emphasis */
 }
 
 /* 바로가기 버튼들 */
 .quick-menu-row {
-    margin-bottom: 60px;
+    margin-bottom: 50px;
 }

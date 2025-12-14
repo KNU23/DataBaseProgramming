@@ -39,6 +39,11 @@ mybatis:
 aladin:
   api:
     key: ttbbw44871233001
+
+gemini:
+  api: 
+    key: "AIzaSyAa5945LepRZyv0PxfqhlbRbgbzcD40YYE"
+    url: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent"
   
   
   

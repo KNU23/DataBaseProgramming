@@ -20,8 +20,18 @@
     "description": "A description for 'aladin.api.key'"
   },
   {
-      "name": "aladin.api.key",
-      "type": "java.lang.String",
-      "description": "A description for 'aladin.api.key'"
-    }
+    "name": "aladin.api.key",
+    "type": "java.lang.String",
+    "description": "A description for 'aladin.api.key'"
+  },
+  {
+    "name": "gemini.api.url",
+    "type": "java.lang.String",
+    "description": "A description for 'gemini.api.url'"
+  },
+  {
+    "name": "gemini.api.key",
+    "type": "java.lang.String",
+    "description": "A description for 'gemini.api.key'"
+  }
 ]}
