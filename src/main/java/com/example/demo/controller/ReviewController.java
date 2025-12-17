@@ -29,7 +29,6 @@ public class ReviewController {
             return "redirect:/login";
         }
 
-        // 로그인한 사용자 정보 가져오기
         String email = "kakao_" + principal.getAttributes().get("id");
         CustomerDTO customer = sql.selectOne("Customer.findByEmail", email);
         

@@ -39,8 +39,8 @@
                         <i class="bi bi-cart-plus"></i> 장바구니 담기
                     </button>
     
-                    <button type="submit" class="btn btn-success">
-                        <i class="bi bi-check-lg"></i> 주문 확정
+                    <button type="button" onclick="requestPay()" class="btn btn-success">
+                        <i class="bi bi-credit-card"></i> 카카오페이 결제
                     </button>
                 </div>
             </div>
@@ -48,5 +48,60 @@
     </div>
 
     <th:block th:replace="~{layout/footer :: commonScripts}"></th:block>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+
+    <script th:inline="javascript">
+        function requestPay() {
+            var IMP = window.IMP;
+            IMP.init("imp62521676"); 
+
+            // Thymeleaf 변수 가져오기
+			const bookName = /*[[${book.bookname}]]*/ '도서명';
+            const price = /*[[${book.price}]]*/ 1000;
+            const bookId = /*[[${ordersDTO.bookid}]]*/ 0;
+
+            // CSRF 토큰 설정 (Spring Security)
+            var token = $("meta[name='_csrf']").attr("content");
+            var header = $("meta[name='_csrf_header']").attr("content");
+
+            IMP.request_pay({
+                pg: "kakaopay",
+                pay_method: "card",
+                merchant_uid: "order_" + new Date().getTime(), // 주문번호 생성
+                name: bookName,
+                amount: price,
+                buyer_email: "test@knu.ac.kr",  // (선택) 구매자 이메일
+                buyer_name: "구매자",
+                buyer_tel: "010-1234-5678"
+            }, function (rsp) {
+                if (rsp.success) {
+                    // 결제 성공 시 서버로 데이터 전송 (검증 및 주문 생성)
+                    jQuery.ajax({
+                        url: "/order/pay", 
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        beforeSend: function(xhr) {
+                            xhr.setRequestHeader(header, token);
+                        },
+                        data: JSON.stringify({
+                            imp_uid: rsp.imp_uid,
+                            merchant_uid: rsp.merchant_uid,
+                            amount: rsp.paid_amount,
+                            bookid: bookId
+                        })
+                    }).done(function (response) {
+                        alert("결제가 완료되었습니다.");
+                        window.location.href = "/orderList?msg=success";
+                    }).fail(function (xhr, status, error) {
+                        alert("결제는 완료되었으나 주문 처리에 실패했습니다.\n" + xhr.responseText);
+                    });
+                } else {
+                    alert("결제에 실패하였습니다. " + rsp.error_msg);
+                }
+            });
+        }
+    </script>
 </body>
 </html>

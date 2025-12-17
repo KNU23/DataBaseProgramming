@@ -24,7 +24,7 @@ public class ReviewRepository {
         return sql.selectList("Review.findByBookId", bookid);
     }
     
-    // 구매 횟수 조회
+    /** 구매 횟수 조회 **/
     public int countPurchase(int bookid, int custid) {
         Map<String, Object> params = new HashMap<>();
         params.put("bookid", bookid);

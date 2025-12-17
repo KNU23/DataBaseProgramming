@@ -87,84 +87,83 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="bookinfo: ${bookList}">
-                    
-                    <td>
-                    	<a th:href="@{/bookid/{id}(id=${bookinfo.bookid})}">
-	                        <img th:if="${bookinfo.coverImagePath != null and bookinfo.coverImagePath != ''}"
-	                             th:src="${bookinfo.coverImagePath}" 
-	                             alt="표지" 
-	                             class="img-thumbnail" 
-	                             style="width: 50px; height: 70px; object-fit: cover;">
-	                             
-	                        <!-- 이미지가 없을 때 기본 아이콘 -->
-	                        <div th:if="${bookinfo.coverImagePath == null or bookinfo.coverImagePath == ''}" 
-	                             class="text-center text-muted"
-	                             style="width: 50px; height: 70px; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
-	                            <i class="bi bi-image" style="font-size: 1.5rem;"></i>
-	                        </div>
-                        </a>
-                    </td>
-                    
-                    <td>
-                        <a th:text="${bookinfo.bookid}" th:href="@{/bookid/{id}(id=${bookinfo.bookid})}"></a>
-                    </td>
-                    
-                    <td>
-				        <a th:href="@{/bookid/{id}(id=${bookinfo.bookid})}" 
-				           th:text="${bookinfo.bookname}" 
-				           class="text-decoration-none text-dark fw-bold">
-				           책 제목
-				        </a>
-				    </td>
-                    <td th:text="${bookinfo.publisher}"></td>
-                    <td th:text="${bookinfo.author}"></td>
-                    <td th:text="${#numbers.formatInteger(bookinfo.price, 0, 'COMMA')} + ' 원'"></td>
-                    <td>
-                        <span th:text="${bookinfo.stock} + ' 권'" th:classappend="${bookinfo.stock < 10 && bookinfo.stock > 0} ? 'text-danger fw-bold' : ''"></span>
-                    </td>
-                    
-                    <!-- 주문 버튼 (로그인 시에만 보이도록) -->
-                    <td class="text-center">
-    
-					    <div th:if="${bookinfo.stock > 0}" sec:authorize="isAuthenticated()" class="d-flex justify-content-center gap-2">
-					        
-							<form th:action="@{/cart/add}" method="post">
-							    <input type="hidden" name="bookid" th:value="${bookinfo.bookid}">
-							    <input type="hidden" name="count" value="1"> 
-							    <button type="submit" class="btn btn-sm btn-outline-primary" ...>
-							        <i class="bi bi-cart-plus"></i>
-							    </button>
-							</form>
-					
-					        <a th:href="@{/addOrder/{bookid}(bookid=${bookinfo.bookid})}" 
-					           class="btn btn-sm btn-success"
-					           title="바로 주문">
-					           <i class="bi bi-credit-card"></i>
-					        </a>
-					    </div>
-					
-					    <button class="btn btn-sm btn-secondary" disabled 
-					            th:if="${bookinfo.stock <= 0}"
-					            sec:authorize="isAuthenticated()">
-					       <i class="bi bi-x-circle"></i> 품절
-					    </button>
-					
-					</td>
-                </tr>
-                
-                <!-- 데이터 없을 때 -->
-                <tr th:if="${bookList == null or bookList.isEmpty()}">
-                    <td colspan="9" class="text-center">
-                        <span th:if="${keyword != null and keyword != ''}">
-                            '[[${keyword}]]'에 대한 검색 결과가 없습니다.
-                        </span>
-                        <span th:unless="${keyword != null and keyword != ''}">
-                            등록된 도서가 없습니다.
-                        </span>
-                    </td>
-                </tr>
-            </tbody>
+			    <tr th:each="bookinfo: ${bookList}">
+			        
+			        <td>
+			            <a th:href="@{/bookid/{id}(id=${bookinfo.bookid})}">
+			                <img th:if="${bookinfo.coverImagePath != null and bookinfo.coverImagePath != ''}"
+			                     th:src="${bookinfo.coverImagePath}" 
+			                     alt="표지" 
+			                     class="img-thumbnail" 
+			                     style="width: 50px; height: 70px; object-fit: cover;">
+			                     
+			                <div th:if="${bookinfo.coverImagePath == null or bookinfo.coverImagePath == ''}" 
+			                     class="text-center text-muted"
+			                     style="width: 50px; height: 70px; background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
+			                    <i class="bi bi-image" style="font-size: 1.5rem;"></i>
+			                </div>
+			            </a>
+			        </td>
+			        
+			        <td>
+			            <a th:text="${bookinfo.bookid}" th:href="@{/bookid/{id}(id=${bookinfo.bookid})}"></a>
+			        </td>
+			        
+			        <td>
+			            <a th:href="@{/bookid/{id}(id=${bookinfo.bookid})}" 
+			               th:text="${bookinfo.bookname}" 
+			               class="text-decoration-none text-dark fw-bold">
+			               책 제목
+			            </a>
+			        </td>
+			        <td th:text="${bookinfo.publisher}"></td>
+			        <td th:text="${bookinfo.author}"></td>
+			        
+			        <td class="text-nowrap" th:text="${#numbers.formatInteger(bookinfo.price, 0, 'COMMA')} + '원'"></td>
+			        
+			        <td>
+			            <span class="text-nowrap" 
+			                  th:text="${bookinfo.stock} + '권'" 
+			                  th:classappend="${bookinfo.stock < 10 && bookinfo.stock > 0} ? 'text-danger fw-bold' : ''">
+			            </span>
+			        </td>
+			        
+			        <td class="text-center">
+			            <div th:if="${bookinfo.stock > 0}" sec:authorize="isAuthenticated()" class="d-flex justify-content-center gap-2">
+			                <form th:action="@{/cart/add}" method="post">
+			                    <input type="hidden" name="bookid" th:value="${bookinfo.bookid}">
+			                    <input type="hidden" name="count" value="1"> 
+			                    <button type="submit" class="btn btn-sm btn-outline-primary">
+			                        <i class="bi bi-cart-plus"></i>
+			                    </button>
+			                </form>
+			        
+			                <a th:href="@{/addOrder/{bookid}(bookid=${bookinfo.bookid})}" 
+			                   class="btn btn-sm btn-success"
+			                   title="바로 주문">
+			                   <i class="bi bi-credit-card"></i>
+			                </a>
+			            </div>
+			        
+			            <button class="btn btn-sm btn-secondary" disabled 
+			                    th:if="${bookinfo.stock <= 0}"
+			                    sec:authorize="isAuthenticated()">
+			               <i class="bi bi-x-circle"></i> 품절
+			            </button>
+			        </td>
+			    </tr>
+			    
+			    <tr th:if="${bookList == null or bookList.isEmpty()}">
+			        <td colspan="9" class="text-center">
+			            <span th:if="${keyword != null and keyword != ''}">
+			                '[[${keyword}]]'에 대한 검색 결과가 없습니다.
+			            </span>
+			            <span th:unless="${keyword != null and keyword != ''}">
+			                등록된 도서가 없습니다.
+			            </span>
+			        </td>
+			    </tr>
+			</tbody>
         </table>
         
         <hr>

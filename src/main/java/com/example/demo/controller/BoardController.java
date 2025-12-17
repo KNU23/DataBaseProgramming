@@ -42,9 +42,6 @@ public class BoardController {
     private final SqlSessionTemplate sql; 
     private final ReviewService reviewService;
 	
-    // ==========================================
-    //              도서 조회 기능
-    // ==========================================
 
     /** 도서 목록 페이지 (페이징, 검색, 정렬) **/
 	@GetMapping("/list")
@@ -70,34 +67,25 @@ public class BoardController {
 	public String detail(@PathVariable("id") Integer id, Model model, 
 	                     @AuthenticationPrincipal OAuth2User principal) { // principal 파라미터 추가
 	    
-	    // 도서 상세 정보
 	    BoardDTO boardDTO = boardService.detail(id);
 	    model.addAttribute("bookDetail", boardDTO);
 	    
-	    // 리뷰 목록 가져오기
 	    List<ReviewDTO> reviews = reviewService.getReviewsByBookId(id);
 	    model.addAttribute("reviews", reviews);
 	    
-	 // ================= [수정된 부분 시작] =================
-	    
-	    // 3. 리뷰 작성 권한 확인 (관리자 OR 구매자)
 	    boolean canReview = false;
 	    
-	    // (1) 현재 로그인한 사용자의 인증 정보 가져오기 (권한 확인용)
 	    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 	    boolean isAdmin = false;
 	    
 	    if (auth != null && auth.isAuthenticated()) {
-	        // "ROLE_ADMIN" 권한을 가지고 있는지 확인 (스트림 API 사용)
 	        isAdmin = auth.getAuthorities().stream()
 	                      .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 	    }
 
-	    // (2) 관리자라면 무조건 true, 아니라면 구매 내역 확인
 	    if (isAdmin) {
 	        canReview = true;
 	    } else if (principal != null) {
-	        // 로그인한 일반 사용자 -> 구매 내역 체크
 	        String email = "kakao_" + principal.getAttributes().get("id");
 	        CustomerDTO customer = sql.selectOne("Customer.findByEmail", email);
 	        if (customer != null) {
@@ -105,16 +93,11 @@ public class BoardController {
 	        }
 	    }
 	    
-	    // ================= [수정된 부분 끝] =================
 	    
 	    model.addAttribute("canReview", canReview);
 
 	    return "detailBook";
 	}
-
-    // ==========================================
-    //            관리자 기능 (등록/수정/삭제)
-    // ==========================================
 	
 	/** 도서 등록 페이지 이동 **/
 	@GetMapping("/addBook")
@@ -172,10 +155,6 @@ public class BoardController {
 		return "redirect:/list";
 	}
 	
-    // ==========================================
-    //            API 검색 및 추가 기능
-    // ==========================================
-
 	/** API 도서 검색 페이지 이동 **/
 	@GetMapping("/search")
 	public String searchPage() {
@@ -197,7 +176,6 @@ public class BoardController {
                              RedirectAttributes redirectAttributes,
                              @AuthenticationPrincipal OAuth2User principal) { 
 		
-		// 도서 정보 DB 저장
 		boardService.save(boardDTO);
 		
         if (principal != null) {
@@ -224,10 +202,6 @@ public class BoardController {
 		return "redirect:/list";
 	}
 	
-    // ==========================================
-    //               기타 편의 기능
-    // ==========================================
-
 	/** 도서 목록 리셋 (인기 도서 100권 갱신) **/
     @GetMapping("/refresh-books")
     public String refreshBooks(RedirectAttributes redirectAttributes) {

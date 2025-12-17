@@ -3,45 +3,130 @@
 
 <head th:replace="~{layout/header :: commonHead(title='로그인')}"></head>
 
-<body style="background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1507842217121-9e9f1479b035?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80'); 
-             background-size: cover; background-position: center; background-attachment: fixed;
-             min-height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0;">
+<body class="login-body">
 
-    <div class="container" style="max-width: 420px;">
-        <div class="card border-0 shadow-lg" style="border-radius: 20px; overflow: hidden; backdrop-filter: blur(10px); background-color: rgba(255, 255, 255, 0.95);">
-            
+    <div class="container d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+        
+        <div class="card login-card shadow-lg">
             <div class="card-body p-5 text-center">
-                <div class="mb-4">
-                    <i class="bi bi-book-half text-primary" style="font-size: 3rem;"></i>
-                    <h3 class="fw-bold mt-2 text-dark">KNU BookStore</h3>
-                    <p class="text-muted small">나만의 서재를 만나보세요</p>
+                
+                <div class="mb-4 logo-area">
+                    <i class="bi bi-book-half"></i>
                 </div>
+                
+                <h3 class="login-title">KNU BookStore</h3>
+                <p class="login-subtitle">당신의 서재에 오신 것을 환영합니다.</p>
 
-                <div th:if="${param.logout}" class="alert alert-success py-2 small" role="alert">
-                    <i class="bi bi-check-circle-fill me-1"></i> 로그아웃되었습니다.
+                <div th:if="${param.logout}" class="alert alert-success py-2 small rounded-pill mb-4" role="alert">
+                    <i class="bi bi-check-circle-fill me-1"></i> 로그아웃 되었습니다.
                 </div>
-                <div th:if="${param.error}" class="alert alert-danger py-2 small" role="alert">
+                <div th:if="${param.error}" class="alert alert-danger py-2 small rounded-pill mb-4" role="alert">
                     <i class="bi bi-exclamation-circle-fill me-1"></i> 로그인에 실패했습니다.
                 </div>
                 
-                <a href="/oauth2/authorization/kakao" class="btn w-100 py-3 fw-bold shadow-sm mb-4" 
-                   style="background-color: #FEE500; border: none; color: #191919; border-radius: 10px; font-size: 1rem;">
+                <a href="/oauth2/authorization/kakao" class="btn btn-kakao w-100 py-3 mb-4 shadow-sm">
                     <i class="bi bi-chat-fill me-2"></i> 카카오로 3초 만에 시작하기
                 </a>
                 
-                <hr class="my-4 text-muted">
+                <hr class="my-4 border-secondary opacity-25">
                 
-                <a href="/" class="text-decoration-none text-secondary small">
-                    <i class="bi bi-arrow-left"></i> 홈으로 돌아가기
+                <a href="/" class="btn-home">
+                    <i class="bi bi-arrow-left me-1"></i> 홈으로 돌아가기
                 </a>
             </div>
         </div>
         
-        <div class="text-center mt-4 text-white-50 small">
+        <div class="copyright-text">
             &copy; 2025 KNU BookStore. All rights reserved.
         </div>
     </div>
 
     <th:block th:replace="~{layout/footer :: commonScripts}"></th:block>
+
+    <style>
+        /* 1. 배경 설정: 기존 이미지에 웜톤 오버레이를 씌워 따뜻한 느낌 강조 */
+        .login-body {
+            background: linear-gradient(rgba(62, 39, 35, 0.6), rgba(62, 39, 35, 0.6)), 
+                        url('https://images.unsplash.com/photo-1507842217121-9e9f1479b035?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            font-family: var(--font-body, sans-serif);
+        }
+
+        /* 2. 로그인 카드: 반투명한 크림색 종이 질감 */
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            background-color: rgba(253, 251, 247, 0.92); /* 크림색 + 반투명 */
+            backdrop-filter: blur(15px); /* 배경 흐림 효과 */
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4) !important;
+            transition: transform 0.3s ease;
+        }
+        
+        .login-card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* 3. 타이포그래피 & 아이콘 */
+        .logo-area i {
+            font-size: 3.5rem;
+            color: var(--primary-color, #5D4037);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .login-title {
+            font-family: var(--font-heading, serif); /* 명조체 적용 */
+            font-weight: 700;
+            color: var(--primary-dark, #3E2723);
+            margin-bottom: 0.5rem;
+        }
+
+        .login-subtitle {
+            color: var(--text-muted, #8D6E63);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+
+        /* 4. 카카오 버튼 커스텀 */
+        .btn-kakao {
+            background-color: #FEE500;
+            color: #191919;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        .btn-kakao:hover {
+            background-color: #fdd835;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(254, 229, 0, 0.4) !important;
+        }
+
+        /* 5. 하단 링크 스타일 */
+        .btn-home {
+            text-decoration: none;
+            color: var(--text-muted, #8D6E63);
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .btn-home:hover {
+            color: var(--primary-color, #5D4037);
+            text-decoration: underline;
+        }
+
+        /* 6. 하단 저작권 문구 */
+        .copyright-text {
+            position: absolute;
+            bottom: 30px;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+            font-weight: 300;
+        }
+    </style>
 </body>
 </html>

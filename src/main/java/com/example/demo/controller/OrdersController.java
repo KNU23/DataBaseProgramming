@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.http.ResponseEntity; // 추가됨
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -11,15 +12,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable; 
 import org.springframework.web.bind.annotation.PostMapping;  
-import com.example.demo.dto.CartDTO;
+import org.springframework.web.bind.annotation.RequestBody; // 추가됨
+import org.springframework.web.bind.annotation.ResponseBody; // 추가됨
 
+import com.example.demo.dto.CartDTO;
 import com.example.demo.dto.BoardDTO;     
 import com.example.demo.dto.CustomerDTO;   
 import com.example.demo.dto.OrdersDTO;    
 import com.example.demo.service.BoardService; 
 import com.example.demo.service.CartService;	
-
-import com.example.demo.dto.CustomerDTO;
 import com.example.demo.service.OrdersService;
 
 import lombok.RequiredArgsConstructor;
@@ -67,7 +68,7 @@ public class OrdersController {
         return "addOrder";
     }
 
-    /** 개별 상품 주문 처리 (POST) **/
+    /** 개별 상품 주문 처리 (POST) - 기존 폼 전송 방식 유지 **/
     @PostMapping("/addOrder")
     public String addOrder(OrdersDTO ordersDTO, @AuthenticationPrincipal OAuth2User principal) {
         try {          
@@ -82,6 +83,43 @@ public class OrdersController {
             return "redirect:/list?error=orderFailed";
         }
         return "redirect:/orderList?msg=success";
+    }
+    
+    /** [추가됨] 단건 주문 결제 처리 (AJAX JSON 요청) **/
+    @PostMapping("/order/pay")
+    @ResponseBody
+    public ResponseEntity<String> orderPay(@RequestBody Map<String, Object> paymentData, 
+                                           @AuthenticationPrincipal OAuth2User principal) {
+        try {
+            if (principal == null) {
+                return ResponseEntity.status(401).body("로그인이 필요합니다.");
+            }
+
+            // 1. 사용자 정보 가져오기
+            String email = "kakao_" + principal.getAttributes().get("id");
+            CustomerDTO customer = sql.selectOne("Customer.findByEmail", email);
+
+            // 2. 클라이언트에서 보낸 데이터 추출
+            String impUid = (String) paymentData.get("imp_uid");
+            int bookid = Integer.parseInt(String.valueOf(paymentData.get("bookid")));
+            int amount = Integer.parseInt(String.valueOf(paymentData.get("amount")));
+
+            // 3. OrdersDTO 생성
+            OrdersDTO ordersDTO = new OrdersDTO();
+            ordersDTO.setCustid(customer.getCustid());
+            ordersDTO.setBookid(bookid);
+            ordersDTO.setSaleprice(amount); // 결제된 금액
+            ordersDTO.setImpUid(impUid);    // 결제 고유 번호 저장
+
+            // 4. 주문 서비스 호출 (재고 감소 및 주문 생성)
+            ordersService.orderOne(ordersDTO);
+
+            return ResponseEntity.ok("success");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().body("주문 처리 실패: " + e.getMessage());
+        }
     }
 
     /** 주문 페이지에서 장바구니 담기 처리 (POST) **/
