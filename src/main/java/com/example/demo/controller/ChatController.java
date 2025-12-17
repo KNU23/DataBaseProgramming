@@ -13,6 +13,7 @@ public class ChatController {
 
     private final ChatService chatService;
 
+    /** 챗봇 메시지 처리 **/
     @PostMapping
     public ResponseEntity<String> chat(@RequestBody Map<String, String> payload) {
         String userMessage = payload.get("message");

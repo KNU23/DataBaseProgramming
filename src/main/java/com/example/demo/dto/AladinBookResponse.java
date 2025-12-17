@@ -4,9 +4,11 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
+/** 알라딘 API 응답 DTO **/
 @Getter
 @Setter
 public class AladinBookResponse {
+    
     private List<Item> item;
 
     @Getter
@@ -18,8 +20,7 @@ public class AladinBookResponse {
         private Integer priceSales; // 판매가
         private String description; // 설명
         private String cover;       // 표지 이미지 URL
-        
-        // 알라딘 평점 (10점 만점)
-        private int customerReviewRank; 
+     
+        private int customerReviewRank; // 알라딘 평점
     }
 }

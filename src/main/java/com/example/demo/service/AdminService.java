@@ -15,17 +15,17 @@ public class AdminService {
 
     private final AdminRepository adminRepository;
     
-    /** 대시보드 정보 얻기 **/
+    /** 관리자 대시보드 데이터 조회 **/
     public Map<String, Object> getDashboardData() {
         Map<String, Object> data = new HashMap<>();
         
-        // 카드 지표
+        /** 카드 지표 **/
         data.put("totalUsers", adminRepository.countUsers());
         data.put("totalBooks", adminRepository.countBooks());
         data.put("totalOrders", adminRepository.countOrders());
         data.put("totalRevenue", adminRepository.totalRevenue());
         
-        // 차트 데이터
+        /** 차트 데이터 **/
         data.put("dailySales", adminRepository.getDailySales());
         data.put("topBooks", adminRepository.getTopSellingBooks());
         

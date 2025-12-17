@@ -49,7 +49,7 @@ public class BookApiService {
 
                     BoardDTO book = new BoardDTO();
                     
-                    // 1. 제목 길이 처리
+                    /** 제목 길이 처리 **/
                     String title = item.getTitle();
                     if (title != null && title.length() > 50) { 
                         title = title.substring(0, 50) + "...";
@@ -60,13 +60,13 @@ public class BookApiService {
                     book.setPrice(item.getPriceSales());
                     book.setStock(10); 
                     
-                    // 2. 고화질 이미지
+                    /** 고화질 이미지 **/
                     String coverUrl = item.getCover();
                     if (coverUrl != null) {
                         book.setCoverImagePath(coverUrl.replace("coversum", "cover500"));
                     }
 
-                    // 3. 평점 정보
+                    /**. 평점 정보 **/
                     String originalDesc = item.getDescription();
                     if (originalDesc == null) originalDesc = "";
                     
@@ -111,7 +111,7 @@ public class BookApiService {
     
                         BoardDTO book = new BoardDTO();
                         
-                        // 1. 제목 길이 처리 
+                        /** 제목 길이 처리 **/
                         String title = item.getTitle();
                         if (title != null && title.length() > 50) { 
                             title = title.substring(0, 50) + "...";
@@ -123,13 +123,13 @@ public class BookApiService {
                         book.setPrice(item.getPriceSales());
                         book.setStock(10);
                         
-                        // 2. 고화질 이미지
+                        /** 고화질 이미지 **/
                         String coverUrl = item.getCover();
                         if (coverUrl != null) {
                             book.setCoverImagePath(coverUrl.replace("coversum", "cover500"));
                         }
 
-                        // 3. 평점 정보
+                        /** 평점 정보 **/
                         String originalDesc = item.getDescription();
                         if (originalDesc == null) originalDesc = "";
                         

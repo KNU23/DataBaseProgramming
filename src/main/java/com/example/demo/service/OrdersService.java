@@ -26,13 +26,13 @@ public class OrdersService {
     @Transactional
     public void orderCart(int custid) throws Exception {
         
-        // 장바구니 목록 가져오기
+        /** 장바구니 목록 가져오기 **/
         List<CartDTO> cartList = cartService.getCartList(custid);
         if (cartList.isEmpty()) {
             throw new Exception("장바구니가 비어있습니다.");
         }
 
-        // 총 가격 계산 및 재고 체크
+        /** 총 가격 계산 및 재고 체크 **/
         int totalPrice = 0;
         for (CartDTO cart : cartList) {
             totalPrice += cart.getTotalPrice();
@@ -40,19 +40,19 @@ public class OrdersService {
             if(result == 0) throw new Exception("재고 부족: 도서 ID " + cart.getBookid());
         }
 
-        // 주문정보 생성 (Orders)
+        /** 주문정보 생성 (Orders) **/
         OrdersDTO order = new OrdersDTO();
         order.setCustid(custid);
         order.setTotalPrice(totalPrice);
         sql.insert("Orders.insertOrder", order); 
 
-        // 주문 상세정보 저장 (OrderDetails)
+        /** 주문 상세정보 저장 (OrderDetails) **/
         Map<String, Object> params = new HashMap<>();
         params.put("orderId", order.getOrderid());
         params.put("details", cartList);
         sql.insert("Orders.insertOrderDetails", params);
 
-        // 장바구니 비우기
+        /** 장바구니 비우기 **/
         sql.delete("Cart.clearCart", custid);
     }
     
@@ -60,17 +60,17 @@ public class OrdersService {
     @Transactional
     public void orderOne(OrdersDTO ordersDTO) throws Exception {
         
-        // 1. 재고 확인 및 감소
+        /** 재고 확인 및 감소 **/
         int result = sql.update("Board.decreaseStock", ordersDTO.getBookid());
         if (result == 0) {
             throw new Exception("재고가 부족합니다.");
         }
 
-        // 2. 주문(Orders) 생성
+        /** 주문(Orders) 생성 **/
         ordersDTO.setTotalPrice(ordersDTO.getSaleprice());
         sql.insert("Orders.insertOrder", ordersDTO); 
 
-        // 3. 주문 상세(OrderDetails) 생성
+        /** 주문 상세(OrderDetails) 생성 **/
         Map<String, Object> detailItem = new HashMap<>();
         detailItem.put("bookid", ordersDTO.getBookid());
         detailItem.put("count", 1); 

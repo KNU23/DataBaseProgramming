@@ -17,6 +17,7 @@ public class FileStorageService {
 
     private final Path rootLocation; 
 
+    /** 파일 저장소 초기화 **/
     public FileStorageService() {
         this.rootLocation = Paths.get("./uploads");
         try {
@@ -26,7 +27,7 @@ public class FileStorageService {
         }
     }
 
-    /** 파일 저장, 웹 접근 경로 반환 **/
+    /** 파일 저장 **/
     public String storeFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             return null;

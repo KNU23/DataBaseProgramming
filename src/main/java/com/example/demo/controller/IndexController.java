@@ -26,7 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 public class IndexController {
 	
 	private final BoardService boardService;
-	
+	 
+	/** 메인 페이지 **/
 	@GetMapping("/")
 	public String index(Model model) {
 		log.info("메인 페이지 접속");

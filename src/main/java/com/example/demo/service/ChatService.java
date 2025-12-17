@@ -26,29 +26,27 @@ public class ChatService {
     private final RestTemplate restTemplate = new RestTemplate();
     private final BoardRepository boardRepository;
 
-    // AI와 대화하는 메인 메서드
+    /** 챗봇 응답 생성 메인 메서드 **/
     public String getChatResponse(String userMessage) {
         try {
-            // 1. 사용자의 질문에서 '검색 키워드' 추출 (AI 사용)
+            /** 사용자의 질문에서 '검색 키워드' 추출 **/
             String searchKeyword = extractSearchKeyword(userMessage);
             
-            // 2. DB에서 책 검색 (키워드가 없으면 최신순 5권 조회)
+            /** DB에서 책 검색 **/
             List<BoardDTO> foundBooks;
             if (searchKeyword == null || searchKeyword.isEmpty() || searchKeyword.equals("NO_SEARCH")) {
-                // 검색어가 없으면(예: "안녕", "배송 언제 와?") -> 최신 도서 5권만 참고용으로 가져옴
                 foundBooks = boardRepository.getList(null, 0, 5, "bookid", "desc");
             } else {
-                // 검색어가 있으면(예: "해리포터") -> 해당 키워드로 DB 검색 (최대 10개)
                 foundBooks = boardRepository.getList(searchKeyword, 0, 10, "bookid", "desc");
             }
 
-            // 3. 검색된 책 정보를 문자열로 변환
+            /** 검색된 책 정보를 문자열로 변환 **/
             String bookContext = convertBooksToString(foundBooks);
 
-            // 4. 최종 프롬프트 생성 (가게 정보 + 찾은 책 정보 + 사용자 질문)
+            /** 최종 프롬프트 생성 **/
             String finalPrompt = createFinalPrompt(userMessage, bookContext, searchKeyword);
 
-            // 5. AI에게 최종 답변 요청
+            /** AI에게 최종 답변 요청 **/
             return callGeminiApi(finalPrompt);
 
         } catch (Exception e) {
@@ -57,9 +55,8 @@ public class ChatService {
         }
     }
 
-    // [1단계] 사용자 질문에서 검색어만 뽑아내는 메서드
+    /** 검색어 추출 **/
     private String extractSearchKeyword(String userMessage) {
-        // AI에게 역할을 부여해서 검색어를 뽑게 시킵니다.
         String prompt = "다음 문장에서 사용자가 찾고 있는 '책 제목'이나 '저자명'을 단어 하나로 추출해줘.\n"
                       + "인사말이나 일반적인 질문이라면 'NO_SEARCH'라고만 답변해.\n"
                       + "문장: \"" + userMessage + "\"\n"
@@ -69,7 +66,7 @@ public class ChatService {
         return response.trim().replace("\"", "").replace("'", ""); // 따옴표 제거
     }
 
-    // [2단계] 검색된 책 리스트를 예쁜 문자열로 정리
+    /** 도서 정보 문자열 변환 **/
     private String convertBooksToString(List<BoardDTO> books) {
         if (books.isEmpty()) {
             return "검색 결과가 없습니다. (없는 책입니다)";
@@ -80,7 +77,7 @@ public class ChatService {
                 .collect(Collectors.joining("\n"));
     }
 
-    // [3단계] 최종 프롬프트 조합
+    /** 최종 프롬프트 생성 **/
     private String createFinalPrompt(String userMessage, String bookContext, String keyword) {
         String storeInfo = 
                   "- 상호명: KNU BookStore\n"
@@ -99,7 +96,7 @@ public class ChatService {
              + "3. 책과 관련 없는 질문에는 가게 정보를 바탕으로 답변하세요.";
     }
 
-    // Gemini API 호출 공통 메서드
+    /** Gemini API 호출 **/
     private String callGeminiApi(String text) {
         try {
             String url = apiUrl + "?key=" + apiKey;

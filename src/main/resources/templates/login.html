@@ -25,7 +25,7 @@
                 </div>
                 
                 <a href="/oauth2/authorization/kakao" class="btn btn-kakao w-100 py-3 mb-4 shadow-sm">
-                    <i class="bi bi-chat-fill me-2"></i> 카카오로 3초 만에 시작하기
+                    <i class="bi bi-chat-fill me-2"></i> 카카오로 로그인하기
                 </a>
                 
                 <hr class="my-4 border-secondary opacity-25">
@@ -44,7 +44,6 @@
     <th:block th:replace="~{layout/footer :: commonScripts}"></th:block>
 
     <style>
-        /* 1. 배경 설정: 기존 이미지에 웜톤 오버레이를 씌워 따뜻한 느낌 강조 */
         .login-body {
             background: linear-gradient(rgba(62, 39, 35, 0.6), rgba(62, 39, 35, 0.6)), 
                         url('https://images.unsplash.com/photo-1507842217121-9e9f1479b035?ixlib=rb-1.2.1&auto=format&fit=crop&w=1920&q=80');
@@ -55,7 +54,6 @@
             font-family: var(--font-body, sans-serif);
         }
 
-        /* 2. 로그인 카드: 반투명한 크림색 종이 질감 */
         .login-card {
             width: 100%;
             max-width: 420px;
@@ -71,7 +69,6 @@
             transform: translateY(-5px);
         }
 
-        /* 3. 타이포그래피 & 아이콘 */
         .logo-area i {
             font-size: 3.5rem;
             color: var(--primary-color, #5D4037);
@@ -91,7 +88,6 @@
             margin-bottom: 2rem;
         }
 
-        /* 4. 카카오 버튼 커스텀 */
         .btn-kakao {
             background-color: #FEE500;
             color: #191919;
@@ -107,7 +103,6 @@
             box-shadow: 0 4px 12px rgba(254, 229, 0, 0.4) !important;
         }
 
-        /* 5. 하단 링크 스타일 */
         .btn-home {
             text-decoration: none;
             color: var(--text-muted, #8D6E63);
@@ -119,7 +114,6 @@
             text-decoration: underline;
         }
 
-        /* 6. 하단 저작권 문구 */
         .copyright-text {
             position: absolute;
             bottom: 30px;

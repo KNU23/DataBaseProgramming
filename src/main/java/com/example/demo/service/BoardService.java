@@ -27,7 +27,7 @@ public class BoardService {
 	private static final int PAGE_BLOCK_SIZE = 5; 
 	private final SqlSessionTemplate sql;
 	
-	/** 도서목록 불러오기 (페이징 + 검색 + 정렬) **/
+	/** 도서 목록 조회 (페이징 + 검색 + 정렬) **/
 	public BookListResponseDTO getList(String keyword, int page, String sort, String order) {
 		
 		if (page <= 0) {
@@ -90,13 +90,13 @@ public class BoardService {
     public void refreshToPopularBooks() {
         System.out.println("[스케줄러 실행] 알라딘 인기 도서 정보 갱신 (기존 데이터 유지)...");
 
-        // 1. 알라딘 API 호출 (100권)
+        /** 알라딘 API 호출 (100권) **/
         List<BoardDTO> newBooks = bookApiService.fetchBooks("Bestseller", 100);
         
         int updatedCount = 0;
         int newCount = 0;
 
-        // 2. 하나씩 확인하며 갱신
+        /** 하나씩 확인하며 갱신 **/
         for (BoardDTO newBook : newBooks) {
             BoardDTO existingBook = boardRepository.findByBookname(newBook.getBookname());
 

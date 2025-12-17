@@ -41,7 +41,7 @@ public class CartController {
         return "redirect:/cart";
     }
 
-    /** 장바구니 목록 페이지 **/
+    /** 장바구니 목록 조회 **/
     @GetMapping("/cart")
     public String cartList(Model model, @AuthenticationPrincipal OAuth2User principal) {
         if (principal == null) return "redirect:/login";

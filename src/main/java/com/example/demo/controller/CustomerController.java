@@ -23,7 +23,7 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
-    /** 고객 목록 페이지 **/
+    /** 고객 목록 조회 **/
     @GetMapping("/customers")
     public String customerList(Model model) {
         List<CustomerDTO> customerList = customerService.getAll();
@@ -31,7 +31,7 @@ public class CustomerController {
         return "customerList"; 
     }
 
-    /** 고객 등록 페이지 **/
+    /** 고객 등록 페이지 이동 **/
     @GetMapping("/addCustomer")
     public String addCustomerForm(Model model) {
         model.addAttribute("customerDTO", new CustomerDTO());

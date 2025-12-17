@@ -17,14 +17,14 @@ public class BoardRepository {
 	
 	private final SqlSessionTemplate sql;
 	
-	/** 검색 조건에 맞는 도서 총 개수 **/
+	/** 검색 조건에 맞는 도서 총 개수 조화**/
 	public int countList(String keyword) {
 	    Map<String, Object> params = new HashMap<>();
 	    params.put("keyword", keyword);
 	    return sql.selectOne("Board.countList", params);
 	}
 	
-	/** 도서 목록 불러오기 (페이징 + 정렬 처리) **/
+	/** 도서 목록 조회 (페이징 + 정렬 + 검색) **/
 	public List<BoardDTO> getList(String keyword, int offset, int limit, String sort, String order) {
 		Map<String, Object> params = new HashMap<>();
 		params.put("keyword", keyword);
@@ -51,7 +51,7 @@ public class BoardRepository {
 		sql.delete("Board.goDelete", id);
 	}
 	
-	/** 재고 1 감소 **/
+	/** 재고 감소 **/
     public int decreaseStock(Integer bookid) {
         return sql.update("Board.decreaseStock", bookid);
     }
@@ -71,7 +71,7 @@ public class BoardRepository {
         sql.update("Board.resetAutoIncrement");
     }
 	
-	/** 도서 제목으로 찾기 (중복 확인) **/
+	/** 도서 제목으로 조회 **/
     public BoardDTO findByBookname(String bookname) {
         return sql.selectOne("Board.findByBookname", bookname);
     }

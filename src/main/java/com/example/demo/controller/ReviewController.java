@@ -20,6 +20,7 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final SqlSessionTemplate sql;
 
+    /** 리뷰 등록 **/
     @PostMapping("/review/add")
     public String addReview(ReviewDTO reviewDTO, 
                             @AuthenticationPrincipal OAuth2User principal,

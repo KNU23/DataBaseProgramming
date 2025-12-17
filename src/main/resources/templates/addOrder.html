@@ -57,27 +57,24 @@
             var IMP = window.IMP;
             IMP.init("imp62521676"); 
 
-            // Thymeleaf 변수 가져오기
 			const bookName = /*[[${book.bookname}]]*/ '도서명';
             const price = /*[[${book.price}]]*/ 1000;
             const bookId = /*[[${ordersDTO.bookid}]]*/ 0;
 
-            // CSRF 토큰 설정 (Spring Security)
             var token = $("meta[name='_csrf']").attr("content");
             var header = $("meta[name='_csrf_header']").attr("content");
 
             IMP.request_pay({
                 pg: "kakaopay",
                 pay_method: "card",
-                merchant_uid: "order_" + new Date().getTime(), // 주문번호 생성
+                merchant_uid: "order_" + new Date().getTime(), 
                 name: bookName,
                 amount: price,
-                buyer_email: "test@knu.ac.kr",  // (선택) 구매자 이메일
+                buyer_email: "test@knu.ac.kr",  
                 buyer_name: "구매자",
                 buyer_tel: "010-1234-5678"
             }, function (rsp) {
                 if (rsp.success) {
-                    // 결제 성공 시 서버로 데이터 전송 (검증 및 주문 생성)
                     jQuery.ajax({
                         url: "/order/pay", 
                         method: "POST",

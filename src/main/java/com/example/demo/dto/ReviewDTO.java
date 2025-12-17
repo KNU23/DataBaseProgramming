@@ -5,15 +5,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+/** 리뷰 DTO **/
 @Getter @Setter @ToString
 public class ReviewDTO {
-    private int reviewId;
-    private int bookid;
-    private int custid;
-    private int rating;
-    private String content;
-    private Timestamp regdate;
+    private int reviewId; // 리뷰 고유 ID (PK)
+    private int bookid;   // 도서 ID (FK)
+    private int custid;   // 작성자 ID (FK)
+    private int rating;   // 별점 (1~5)
+    private String content;   // 리뷰 내용
+    private Timestamp regdate;// 작성 일시
     
-    // 조인을 통해 가져올 작성자 이름
     private String writerName; 
 }

@@ -161,7 +161,7 @@ public class BoardController {
 		return "searchBook";
 	}
 	
-	/** API 도서 검색 수행 (알라딘) **/
+	/** API 도서 검색 수행 **/
 	@PostMapping("/search")
 	public String searchApi(@RequestParam("keyword") String keyword, Model model) {
 		List<BoardDTO> books = bookApiService.searchBooks(keyword);
