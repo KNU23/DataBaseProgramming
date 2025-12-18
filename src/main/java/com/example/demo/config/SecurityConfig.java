@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .requestMatchers("/login").permitAll()
                 
                 /** 로그인 사용자만 허용 **/
-                .requestMatchers("/cart/**", "/orderList", "/search", "/addApiBook", "/customers", "/addCustomer", "/review/**").authenticated()                             
+                .requestMatchers("/cart/**", "/orderList", "/search", "/addApiBook", "/customers", "/addCustomer", "/review").authenticated()                             
                 .requestMatchers("/toggle-admin").authenticated() 
                 
                 /** 관리자 기능 **/

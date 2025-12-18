@@ -29,4 +29,19 @@ public class ReviewService {
     public boolean canReview(int bookid, int custid) {
         return reviewRepository.countPurchase(bookid, custid) > 0;
     }
+
+    /** 리뷰 수정 **/
+    public void updateReview(ReviewDTO review) {
+        reviewRepository.update(review);
+    }
+
+    /** 리뷰 삭제 **/
+    public void deleteReview(int reviewId, int custid) {
+        reviewRepository.delete(reviewId, custid);
+    }
+    
+    /** 리뷰 단건 조회 **/
+    public ReviewDTO getReview(int reviewId) {
+        return reviewRepository.findById(reviewId);
+    }
 }

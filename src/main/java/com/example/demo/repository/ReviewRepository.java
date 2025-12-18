@@ -31,4 +31,22 @@ public class ReviewRepository {
         params.put("custid", custid);
         return sql.selectOne("Review.countPurchase", params);
     }
+
+    /** 리뷰 수정 **/
+    public void update(ReviewDTO review) {
+        sql.update("Review.update", review);
+    }
+
+    /** 리뷰 삭제 **/
+    public void delete(int reviewId, int custid) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("reviewId", reviewId);
+        params.put("custid", custid);
+        sql.delete("Review.delete", params);
+    }
+
+    /** 리뷰 단건 조회 **/
+    public ReviewDTO findById(int reviewId) {
+        return sql.selectOne("Review.findById", reviewId);
+    }
 }
